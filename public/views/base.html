@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+<html lang="en" ng-app="BSMEAN">
+<head>
+    <title>{% block title %} BookStore MEAN {% endblock %}</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="BookStore application">
+
+    {% block stylesheets %}
+        <link rel="stylesheet" href="/assets/stylesheets/bootstrap.min.css">
+        <link rel="stylesheet" href="/assets/stylesheets/jquery.fullPage.css">
+        <link rel="stylesheet" href="/assets/stylesheets/font-awesome.min.css">
+        <link rel="stylesheet" href="/assets/stylesheets/bootstrap-social.css">
+        <link rel="stylesheet" href="/assets/stylesheets/star-rating.min.css">
+        <link rel="stylesheet" href="/assets/stylesheets/bsmean.css">
+    {% endblock %}
+
+    <link rel="shortcut icon" type="image/png" href="/public/assets/images/favicon.png">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    </head>
+    <body ng-controller="BSMEANController">
+
+        {% block body %}{% endblock %}
+
+        {% block javascripts %}
+            <script src="/assets/javascripts/jquery-1.11.0.min.js"></script>
+            <script src="/assets/javascripts/bootstrap.min.js"></script>
+            <script src="/assets/javascripts/angular.min.js"></script>
+            <script src="/assets/javascripts/angular-sanitize.min.js"></script>
+            <script src="/assets/javascripts/ng-infinite-scroll.min.js"></script>
+            <script src="/assets/javascripts/star-rating.min.js"></script>
+            <script src="/controllers/bsmean.js"></script>
+        {% endblock %}
+    </body>
+</html>

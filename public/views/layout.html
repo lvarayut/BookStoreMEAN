@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block body %}
+	{% block navbarMenu %}
+	<div class="navbar navbar-default" role="navigation" ng-init="loadCart()">
+		<div class="container">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<div class="navbar-header">
+				<a class="navbar-brand" href="/">BookStore</a>
+			</div>
+			<div class="navbar-collapse collapse bs-navbar-collapse">
+				<!-- Normal Navbar  -->
+				<ul class="nav navbar-nav navbar-right visible-md visible-lg">
+					<li>
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-bell"></i></a>
+						<div class="dropdown-menu dropdown-menu-right bs-navbar-dropdown-container">
+							<div class="bs-navbar-wishlist-header">
+								<h5>Notification</h5>
+								<a class="" href="#"><i class="glyphicon glyphicon-cog"></i></a>
+							</div>
+							<div class="bs-navbar-wishlist-body">
+								<a href="#">
+									<img align="left" width="50" height="50" src="@routes.Assets.at("images/play-for-java.png")">
+									<span><b>Play framework for java</b> - Some description: dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</span>
+								</a>
+								<a href="#">
+									<img align="left" width="50" height="50" src="@routes.Assets.at("images/mongodb.png")">
+									<span><b>MongoDB</b> - Some description: dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</span>
+								</a>
+							</div>
+						</div>
+					</li>
+					<li>
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-heart"></i></a>
+						<div class="dropdown-menu dropdown-menu-right bs-navbar-dropdown-container">
+							<div class="bs-navbar-wishlist-header">
+								<h5>WishList</h5>
+								<a class="" href="#"><i class="glyphicon glyphicon-cog"></i></a>
+							</div>
+							<div class="bs-navbar-wishlist-body">
+								<a href="#">
+									<img align="left" width="50" height="50" src="@routes.Assets.at("images/play-for-java.png")">                                    <span><b>Play framework for java</b> - Some description: dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</span>
+								</a>
+								<a href="#">
+									<img align="left" width="50" height="50" src="@routes.Assets.at("images/mongodb.png")">
+									<span><b>MongoDB</b> - Some description: dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</span>
+								</a>
+							</div>
+						</div>
+					</li>
+					<li>
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-shopping-cart"></i></a>
+						<div class="dropdown-menu dropdown-menu-right bs-navbar-dropdown-container">
+							<div class="bs-navbar-wishlist-header">
+								<h5>Your Shopping Cart</h5>
+								<a class="" href="@routes.BookStore.payment()"><i class="fa fa-credit-card"></i></a>
+							</div>
+							<div class="bs-navbar-wishlist-body">
+								<p ng-if="!cart.length">No item in cart...</p>
+								<div  ng-repeat="item in cart track by $index">
+									<a href="/description/{[ item._id ]}">
+										<img align="left" width="50" height="50" ng-src="/getImage/{[ item.imageName ]}">
+										<span><b>{[ item.name ]}</b> - {[ item.description | ellipsis ]}</span>
+									</a>
+								</div>
+							</div>
+						</div>
+					</li>
+					<li>
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Varayut <i class="fa fa-caret-down"></i></a>
+						<ul class="dropdown-menu bs-navbar-dropdown-menu">
+							<li><a href="@routes.BookStore.setting()"><i class="fa fa-cog"></i> Setting</a></li>
+							<li><a href="#"><i class="fa fa-heart"></i> Watchlist</a> </li>
+							<li><a href="@routes.BookStore.history()"><i class="fa fa-clock-o"></i> History</a></li>
+							<li><a href="/logout"><i class="fa fa-sign-out"></i> Logout</a></li>
+						</ul>
+					</li>
+				</ul>
+				<!-- Navbar Collapsed -->
+				<ul class="nav navbar-nav navbar-right visible-xs visible-sm">
+					<li><a href="#"><i class="glyphicon glyphicon-bell"></i> Notification</a></li>
+					<li><a href="@routes.BookStore.setting()"><i class="fa fa-cog"></i> Setting</a></li>
+					<li><a href="#"><i class="fa fa-heart"></i> Watchlist</a> </li>
+					<li><a href="#"><i class="glyphicon glyphicon-shopping-cart"></i> Cart</a></li>
+					<li><a href="@routes.BookStore.history()"><i class="fa fa-clock-o"></i> History</a></li>
+					<li><a href="/logout"><i class="fa fa-sign-out"></i> Logout</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	{% endblock %}
+
+	<div class="container">
+	     {% block content %}{% endblock %}
+	</div>
+
+	{% block footer %}
+	<footer>
+		<hr>
+		<div class="container">
+			<p>&#169; 2014 BookStore. Made by Varayut Lerdkanlayanawat. Follow the entire project on
+				<a href="https://github.com/lvarayut/Bookstore" style="color : #000 ;"><i class="fa fa-github"></i></a>
+			</p>
+		</div>
+	</footer>
+	{% endblock %}	
+
+
+{% endblock %}

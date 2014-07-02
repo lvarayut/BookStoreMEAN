@@ -1,27 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap 101 Template</title>
+{% extends 'layout.html' %}
 
-    <!-- Bootstrap -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+{% block content %}
+  <div class="col-xs-12 col-sm-10 col-md-10 bs-book-container" infinite-scroll="loadBooks()">
+      <div class="col-sm-6 col-md-3" ng-repeat="product in products">
+          <a href="description/{[ product._id ]}">
+              <div class="thumbnail">
+                  <img class="img-responsive" ng-src="getImage/{[product.imageName]}">
+                  <div class="caption">
+                      <h5 class="title">{[ product.name ]}</h5>
+                      <small>{[ product.company ]}</small>
+                      <p class="bs-rating"><i class="fa fa-star" ng-repeat="i in getRating(product.rating) track by $index"></i></p>
+                      <small>Paper back</small>
+                      <small class="bs-price"><i class="glyphicon glyphicon-euro"></i>{[ product.price | number : 2 ]}</small>
+                  </div>
+              </div>
+          </a>
+     </div>
+      <div id="ajaxloader">
+          <i class="fa fa-spinner fa-spin"></i>
+      </div>
+  </div>
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-  </head>
-  <body>
-    <h1>Hello, world!</h1>
+{% endblock %}
 
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="js/bootstrap.min.js"></script>
-  </body>
-</html>
