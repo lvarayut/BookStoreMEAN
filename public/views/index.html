@@ -1,6 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block content %}
+  <h1>Books placed here!!</h1>
   <div class="col-xs-12 col-sm-10 col-md-10 bs-book-container" infinite-scroll="loadBooks()">
       <div class="col-sm-6 col-md-3" ng-repeat="product in products">
           <a href="description/{[ product._id ]}">

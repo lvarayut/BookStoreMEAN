@@ -1,5 +1,8 @@
 'use strict';
 
+/**
+ * Include module dependencies
+ */
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
@@ -13,11 +16,11 @@ var OrderSchema = new Schema({
 		required: true
 	},
 	quantity: {
-		type: int,
+		type: Number,
 		required: true
 	},
 	total: {
-		type: float,
+		type: Number,
 		required: true
 	},
 	userId: {
@@ -25,3 +28,5 @@ var OrderSchema = new Schema({
 		required: true
 	}
 });
+
+module.exports = mongoose.model('Order', OrderSchema);

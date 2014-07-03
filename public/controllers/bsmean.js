@@ -294,8 +294,8 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
 
     // Load items in cart
     $scope.cart = [];
-    $scope.loadCart = function() {
-        var responsePromise = $http.get("/api/loadCart");
+    $scope.loadCarts = function() {
+        var responsePromise = $http.get("/api/loadCarts");
         responsePromise.success(function(data, status, header, config) {
             // Verify if the page is not redirected
             if (typeof data[0] != "undefined" && typeof data[0]._id != "undefined") {
