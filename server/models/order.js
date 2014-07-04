@@ -1,32 +1,32 @@
 'use strict';
 
 /**
- * Include module dependencies
- */
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-
-/**
  * Order Schema
  */
 
-var OrderSchema = new Schema({
-	productIds: {
-		type: Array,
-		required: true
-	},
-	quantity: {
-		type: Number,
-		required: true
-	},
-	total: {
-		type: Number,
-		required: true
-	},
-	userId: {
-		type: String,
-		required: true
-	}
-});
+module.exports = function(mongoose, conn) {
+	var OrderSchema = mongoose.Schema({
 
-module.exports = mongoose.model('Order', OrderSchema);
+
+		productIds: {
+			type: Array,
+		},
+		quantity: {
+			type: Number,
+			required: true
+		},
+		total: {
+			type: Number,
+			required: true
+		},
+		userId: {
+			type: String,
+			required: true
+		}
+	});
+	return {
+		name: 'Order',
+		schema: OrderSchema
+	};
+
+};
