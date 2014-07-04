@@ -1,10 +1,11 @@
 'use strict';
 
 var mongoose = require('mongoose');
-var Product = require('../models/product');
+var productSchema = require('../models/product')(mongoose);
 var fs = require('fs');
 var Grid = require('gridfs-stream');
 var gfs = Grid(mongoose.connection.db, mongoose.mongo);
+var Product = mongoose.model(productSchema.name, productSchema.schema);
 
 exports.create = function(req, res) {
 	var product = new Product({
@@ -18,13 +19,22 @@ exports.create = function(req, res) {
 				filename: product.imageName
 			});
 			fs.createReadStream(product.imagePath).pipe(writeStream);
-		} else{
+		} else {
 			console.log(err);
 		}
 	});
 };
 
-exports.getImage = function(req, res, path){
+exports.findAllBooks = function(req, res) {
+	Product.find(function(err, result) {
+		if (err) {
+			return console.error(err);
+		}
+		return res.json(result);
+	});
+}
+
+exports.getImage = function(req, res, path) {
 	var readStream = gfs.createReadStream({
 		filename: path
 	});

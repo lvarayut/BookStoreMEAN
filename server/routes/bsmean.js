@@ -9,14 +9,12 @@ module.exports = function(app) {
 		res.send("I'm here");
 	});
 
-	app.get('/api/loadBooks', function(req, res){
-
+	app.get('/api/loadBooks/:count', function(req, res) {
+		ProductController.findAllBooks(req, res);
 	});
 
 	// Other resquest sent to Angular routes
 	app.get('*', function(req, res) {
 		res.render('index', {});
 	});
-
-
 };

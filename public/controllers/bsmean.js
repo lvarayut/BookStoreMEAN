@@ -45,8 +45,9 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
         if (busy) return;
         busy = true;
         $("#ajaxloader").show();
-        var responsePromise = $http.get("/loadProducts/" + count);
+        var responsePromise = $http.get("/api/loadBooks/" + count);
         responsePromise.success(function(data, status, header, config) {
+            console.log(data);
             if (typeof $scope.products == 'undefined') {
                 $scope.products = data;
             } else {
