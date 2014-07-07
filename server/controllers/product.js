@@ -25,6 +25,16 @@ exports.create = function(req, res) {
 	});
 };
 
+exports.update = function(product) {
+	product.update({
+		id: product['_id']
+	}, function(err, result) {
+		if (err) {
+			console.log('Error: cannot update product');
+		}
+	});
+};
+
 exports.findAllBooks = function(req, res) {
 	Product.find(function(err, result) {
 		if (err) {
@@ -32,10 +42,39 @@ exports.findAllBooks = function(req, res) {
 		}
 		return res.json(result);
 	});
-}
+};
 
-exports.getImage = function(req, res, path) {
+exports.getImage = function(req, res, productId) {
 	var readStream = gfs.createReadStream({
-		filename: path
+		filename: productId
 	});
-}
+	readStream.pipe(res);
+};
+
+exports.init = function() {
+	var products = Product.find(function(err, result) {
+		var userSchema = require('../models/user')(mongoose);
+		var User = mongoose.model(userSchema.name);
+		User.findOne({
+			username: 'seller'
+		}, function(err, user) {
+			for (var i = 0; i < result.length; i++) {
+
+				// Update userId of products
+				result[i].update({
+					userId: user['_id']
+				}, function(err, updateResult) {
+					if (err) {
+						console.log(err);
+					}
+				});
+
+				// Add GridFS for products' image
+				var writeStream = gfs.createWriteStream({
+					filename: result[i]['_id'].toString()
+				});
+				fs.createReadStream(__dirname + '/../..' +result[i]['imagePath']).pipe(writeStream);
+			}
+		});
+	});
+};

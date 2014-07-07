@@ -70,5 +70,19 @@ app.use(function(err, req, res, next) {
     });
 });
 
-app.listen(3000);
-console.log("BSMEAN: listening on port 3000");
+app.listen(3000, function() {
+    var UserController = require(__dirname + '/server/controllers/user');
+    var ProductController = require(__dirname + '/server/controllers/product');
+    var userSchema = require(__dirname + '/server/models/user')(mongoose);
+    var User = mongoose.model(userSchema.name);
+
+    // Add a default data if there is no user
+    var users = User.find(function(err, result) {
+        if (!err && result.length === 0) {
+            UserController.init();
+            ProductController.init();
+        }
+    });
+
+    console.log("BSMEAN: listening on port 3000");
+});

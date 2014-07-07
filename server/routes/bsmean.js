@@ -13,6 +13,10 @@ module.exports = function(app) {
 		ProductController.findAllBooks(req, res);
 	});
 
+	app.get('/api/getImage/:productId', function(req, res){
+		ProductController.getImage(req, res, req.param('productId'))	;
+	});
+
 	// Other resquest sent to Angular routes
 	app.get('*', function(req, res) {
 		res.render('index', {});

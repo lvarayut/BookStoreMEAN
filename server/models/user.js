@@ -6,10 +6,6 @@
 
 module.exports = function(mongoose, conn) {
 	var UserSchema = mongoose.Schema({
-		userId: {
-			type: String,
-			required: true
-		},
 		firstname: {
 			type: String,
 			required: true
