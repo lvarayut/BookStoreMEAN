@@ -44,6 +44,31 @@ exports.findAllBooks = function(req, res) {
 	});
 };
 
+exports.findByName = function(req, res, name) {
+	Product.find({
+		name: new RegExp(name, 'i')
+	}, function(err, result) {
+
+		if (err) {
+			return console.error(err);
+		}
+		return res.json(result);
+	});
+}
+
+exports.description = function(req, res, productId) {
+	Product.findOne({
+		_id: productId
+	}, function(err, result) {
+		if (err) {
+			return console.error(err);
+		}
+		return res.render('description', {
+			product: result
+		});
+	});
+};
+
 exports.getImage = function(req, res, productId) {
 	var readStream = gfs.createReadStream({
 		filename: productId
@@ -73,7 +98,7 @@ exports.init = function() {
 				var writeStream = gfs.createWriteStream({
 					filename: result[i]['_id'].toString()
 				});
-				fs.createReadStream(__dirname + '/../..' +result[i]['imagePath']).pipe(writeStream);
+				fs.createReadStream(__dirname + '/../..' + result[i]['imagePath']).pipe(writeStream);
 			}
 		});
 	});

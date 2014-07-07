@@ -70,7 +70,7 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
 
     // Search
     $scope.searchProducts = function(name) {
-        var responsePromise = $http.get("/searchProducts?name=" + name);
+        var responsePromise = $http.get("api/searchProducts?name=" + name);
         responsePromise.success(function(data, status, header, config) {
             $scope.products = data;
         });
