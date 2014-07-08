@@ -1,34 +1,27 @@
 'use strict';
 
 /**
- * Order Schema
+ * User Schema
  */
+
+var passportLocalMongoose = require('passport-local-mongoose');
 
 module.exports = function(mongoose, conn) {
 	var UserSchema = mongoose.Schema({
 		firstname: {
-			type: String,
-			required: true
+			type: String
 		},
 		lastname: {
-			type: String,
-			required: true
+			type: String
 		},
 		email: {
-			type: String,
-			required: true
-		},
-		password: {
-			type: String,
-			required: true
+			type: String
 		},
 		username: {
-			type: String,
-			required: true
+			type: String
 		},
 		phoneno: {
-			type: String,
-			required: true
+			type: String
 		},
 		accounts: {
 			type: Array
@@ -40,9 +33,14 @@ module.exports = function(mongoose, conn) {
 			type: Array
 		}
 	});
+
+	UserSchema.plugin(passportLocalMongoose, {
+		usernameField: 'email'
+	});
+ 	mongoose.model('User', UserSchema)
 	return {
 		name: 'User',
-		schema: UserSchema
+		schema: UserSchema,
 	};
 
 

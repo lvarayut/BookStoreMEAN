@@ -1,8 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose');
-var userSchema = require('../models/user')(mongoose);
-var User = mongoose.model(userSchema.name, userSchema.schema);
+var User = mongoose.model('User');
 
 exports.create = function(req, res) {
 	var user = new User();

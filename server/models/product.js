@@ -50,6 +50,8 @@ module.exports = function(mongoose, conn) {
 		}
 	});
 
+	mongoose.model('Product', ProductSchema);
+
 	return {
 		name: 'Product',
 		schema: ProductSchema

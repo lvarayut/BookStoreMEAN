@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block body %}
+	<div class="navbar navbar-fixed-top bs-intro-navbar-brand" role="navigation">
+		<div class="container">
+			<div class="navbar-header">
+				<a class="navbar-brand bs-intro-navbar-brand" href="/introduction">BookStore</a>
+			</div>
+		</div>
+	</div>
+	<div id="introduction">
+    <div id="signup-section" class="section">
+    	{% include "./signinbutton.html" %}
+        <div class="bs-intro-container">
+	    <div class="bs-intro-wrapper">
+	        <div class="bs-signup-form-title">
+	            <h1>Welcome to BookStore!</h1>
+	            <h4>Bookstore has various kinds of books available for you.</h4>
+	        </div>
+	        <form class="bs-signup-form-signup" role="form" method="POST" action="/signup">
+	            <input type="email" name="email" class="form-control" placeholder="Email address" required="">
+	            <input type="password" name="password" class="form-control" placeholder="Password" required="">
+	            <input type="text" name="username" class="form-control" placeholder="Username" required="">
+	            <button class="btn btn-lg btn-primary btn-block" type="submit" style="margin-top: 5px;">Sign up</button>
+	        </form>
+	        <div class="bs-signup-provider">
+	            <hr>
+	            <h5>Or sign up with one of these accounts?</h5>
+	            <a class="btn btn-social-icon btn-google-plus" href="/authenticate/google"><i class="fa fa-google-plus"></i></a>
+	            <a class="btn btn-social-icon btn-facebook" href="/authenticate/facebook"><i class="fa fa-facebook"></i></a>
+	            <a class="btn btn-social-icon btn-twitter" href="/authenticate/twitter"><i class="fa fa-twitter"></i></a>
+	        </div>
+	    </div>
+	</div>
+    </div>
+    <div id="showcase-section" class="section">
+    </div>
+    <div id="contactus-section" class="section">
+    </div>
+</div>
+{% endblock %}
+
+
+{% block javascripts %}
+	{% parent %}
+	<script src='/assets/javascripts/jquery.fullPage.custom.js'></script>
+	<script src='/assets/javascripts/jquery.fullPage.min.js'></script>
+	<script src='/assets/javascripts/jquery.easings.min.js'></script>
+{% endblock %}

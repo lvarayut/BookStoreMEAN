@@ -4,8 +4,11 @@ var express = require('express');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var swig = require('swig');
-
-
+var session = require('express-session');
+var passport = require('passport');
+var LocalStrategy =require('passport-local').Strategy;
+var flash = require('connect-flash');
+var cookieParser = require('cookie-parser');
 var app = express();
 
 app.use(express.static(__dirname + '/public'));
@@ -36,6 +39,23 @@ if (app.get('env') === 'development') {
         cache: true
     });
 }
+
+// Models
+require(__dirname + '/server/models/user')(mongoose);
+require(__dirname + '/server/models/product')(mongoose);
+require(__dirname + '/server/models/order')(mongoose);
+
+// Passport
+app.use(passport.initialize());
+app.use(cookieParser());
+app.use(session({ secret: 'bsmean'}));
+app.use(passport.session());
+var User = mongoose.model('User');
+passport.use(User.createStrategy());
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+app.use(flash());
+
 
 /// Define route files
 require(__dirname + '/server/routes/bsmean')(app);
@@ -73,8 +93,7 @@ app.use(function(err, req, res, next) {
 app.listen(3000, function() {
     var UserController = require(__dirname + '/server/controllers/user');
     var ProductController = require(__dirname + '/server/controllers/product');
-    var userSchema = require(__dirname + '/server/models/user')(mongoose);
-    var User = mongoose.model(userSchema.name);
+    var User = mongoose.model('User');
 
     // Add a default data if there is no user
     var users = User.find(function(err, result) {

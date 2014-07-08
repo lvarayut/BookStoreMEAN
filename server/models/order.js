@@ -24,6 +24,9 @@ module.exports = function(mongoose, conn) {
 			required: true
 		}
 	});
+
+	mongoose.model('Order', OrderSchema);
+
 	return {
 		name: 'Order',
 		schema: OrderSchema

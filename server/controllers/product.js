@@ -1,11 +1,10 @@
 'use strict';
 
 var mongoose = require('mongoose');
-var productSchema = require('../models/product')(mongoose);
 var fs = require('fs');
 var Grid = require('gridfs-stream');
 var gfs = Grid(mongoose.connection.db, mongoose.mongo);
-var Product = mongoose.model(productSchema.name, productSchema.schema);
+var Product = mongoose.model('Product');
 
 exports.create = function(req, res) {
 	var product = new Product({
