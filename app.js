@@ -9,12 +9,17 @@ var passport = require('passport');
 var LocalStrategy =require('passport-local').Strategy;
 var flash = require('connect-flash');
 var cookieParser = require('cookie-parser');
+var morgan = require('morgan');
 var app = express();
 
 app.use(express.static(__dirname + '/public'));
 
 /// Connect to MongoDB
 mongoose.connect('mongodb://localhost/bsmean');
+
+// Logger
+
+app.use(morgan());
 
 /// Config body parser for JSON and form
 app.use(bodyParser.json());
@@ -46,9 +51,9 @@ require(__dirname + '/server/models/product')(mongoose);
 require(__dirname + '/server/models/order')(mongoose);
 
 // Passport
-app.use(passport.initialize());
 app.use(cookieParser());
 app.use(session({ secret: 'bsmean'}));
+app.use(passport.initialize());
 app.use(passport.session());
 var User = mongoose.model('User');
 passport.use(User.createStrategy());

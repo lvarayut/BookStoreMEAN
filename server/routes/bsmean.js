@@ -8,8 +8,26 @@ var User = mongoose.model('User');
 
 module.exports = function(app) {
 
+	// Verify whether user already logged in or not
+	var isLoggedIn = function (req, res, next) {
+		if (req.user) {
+			next();
+		} else {
+			req.flash('error', 'Please sign in');
+			res.redirect('/introduction');
+		}
+	};
+
+	app.get('/', isLoggedIn, function(req, res) {
+		res.render('index', {
+			user: req.user
+		});
+	});
+
 	app.get('/introduction', function(req, res) {
-		res.render('introduction', {message : req.flash('error')});
+		res.render('introduction', {
+			message: req.flash('error')
+		});
 	});
 
 	app.post('/signup', function(req, res) {
@@ -62,8 +80,10 @@ module.exports = function(app) {
 	});
 
 	// Other resquest sent to Angular routes
-	app.get('*', passport.authenticate('local', {
-		successRedirect: '/',
-		failureRedirect: '/introduction'
-	}));
+	app.get('*', function(req, res) {
+		res.render('index', {});
+	});
+
+
+
 };
