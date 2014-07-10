@@ -75,10 +75,9 @@ exports.getImage = function(req, res, productId) {
 	readStream.pipe(res);
 };
 
-exports.init = function() {
+exports.init = function(callback) {
 	var products = Product.find(function(err, result) {
-		var userSchema = require('../models/user')(mongoose);
-		var User = mongoose.model(userSchema.name);
+		var User = mongoose.model('User');
 		User.findOne({
 			username: 'seller'
 		}, function(err, user) {
@@ -99,6 +98,7 @@ exports.init = function() {
 				});
 				fs.createReadStream(__dirname + '/../..' + result[i]['imagePath']).pipe(writeStream);
 			}
+			callback();
 		});
 	});
 };

@@ -6,10 +6,11 @@ var bodyParser = require('body-parser');
 var swig = require('swig');
 var session = require('express-session');
 var passport = require('passport');
-var LocalStrategy =require('passport-local').Strategy;
+var LocalStrategy = require('passport-local').Strategy;
 var flash = require('connect-flash');
 var cookieParser = require('cookie-parser');
 var morgan = require('morgan');
+var async = require('async');
 var app = express();
 
 app.use(express.static(__dirname + '/public'));
@@ -19,7 +20,7 @@ mongoose.connect('mongodb://localhost/bsmean');
 
 // Logger
 
-app.use(morgan());
+//app.use(morgan());
 
 /// Config body parser for JSON and form
 app.use(bodyParser.json());
@@ -52,7 +53,9 @@ require(__dirname + '/server/models/order')(mongoose);
 
 // Passport
 app.use(cookieParser());
-app.use(session({ secret: 'bsmean'}));
+app.use(session({
+    secret: 'bsmean'
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 var User = mongoose.model('User');
@@ -103,8 +106,14 @@ app.listen(3000, function() {
     // Add a default data if there is no user
     var users = User.find(function(err, result) {
         if (!err && result.length === 0) {
-            UserController.init();
-            ProductController.init();
+            async.series([
+                function(callback) {
+                    UserController.init(callback)
+                },
+                function(callback) {
+                    ProductController.init(callback);
+                }
+            ]);
         }
     });
 

@@ -34,21 +34,18 @@ exports.findAll = function() {
 };
 
 
-exports.init = function() {
-	var user = new User({
+exports.init = function(callback) {
+	var password = '123456789';
+	User.register(new User({
 		firstname: "sellerFN",
 		lastname: "sllerLN",
 		email: "seller@example.com",
-		password: "123456789",
 		username: "seller",
 		phoneno: "0645789631"
-	});
-
-	user.save(function(err) {
+	}), password, function(err, user) {
 		if (err) {
-			console.log(err);
+			console.error(err);
 		}
+		callback();
 	});
-
-
 };
