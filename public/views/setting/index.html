@@ -1,0 +1,27 @@
+{% extends '../layout.html' %}
+{% block content %}
+
+
+<div class="form-horizontal">
+  <div class="container">
+    <h2>Setting</h2>
+    <hr> </hr>
+    <div class="bs-docs-example">
+     <ul id="myTab" class="nav nav-tabs">
+       <li class="active"><a href="#home" data-toggle="tab">Home</a></li>
+       <li><a href="#address" data-toggle="tab">Addresses</a></li>
+       <li><a href="#account" data-toggle="tab">Accounts</a></li>
+       <li><a href="#password" data-toggle="tab">Password</a></li>
+     </ul>
+     <div id="myTabContent" class="tab-content">
+       <br>
+        {% include 'home.html' %}
+        {% include 'account.html' %}
+
+     </div>
+   </div>
+ </div>
+</div>
+<!--     @address()
+    @account() -->
+{% endblock %}

@@ -47,7 +47,6 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
         $("#ajaxloader").show();
         var responsePromise = $http.get("/api/loadBooks/" + count);
         responsePromise.success(function(data, status, header, config) {
-            console.log(data);
             if (typeof $scope.products == 'undefined') {
                 $scope.products = data;
             } else {
@@ -143,12 +142,11 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
 
     // Load account of a current user
     $scope.loadAccounts = function() {
-        var responsePromise = $http.get("/loadAccounts");
+        var responsePromise = $http.get("/api/loadAccounts");
         responsePromise.success(function(data, status, header, config) {
-            $scope.accounts = data;
+            $scope.accounts = data || [];
         });
         responsePromise.error(function(data, status, header, config) {
-            $scope.accounts = [];
             console.log("Error: No address found");
         });
     }
@@ -165,16 +163,12 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
         if ($scope.accountIndex == null) {
             $scope.accounts.push($scope.editAccount);
             // Add to MongoDB
-            var responsePromise = $http.post("/addAccount", angular.toJson($scope.editAccount));
+            var responsePromise = $http.post("/api/addAccount", angular.toJson($scope.editAccount));
         }
         // Edit
         else {
             var account = angular.copy($scope.accounts[$scope.accountIndex]);
-            // Combine objects into one
-            for (var attributeName in $scope.editAccount) {
-                account["new" + attributeName] = $scope.editAccount[attributeName];
-            }
-            var responsePromise = $http.post("/editAccount", account);
+            var responsePromise = $http.post("/api/editAccount", account);
             $scope.accounts[$scope.accountIndex] = $scope.editAccount;
             $scope.accountIndex = null;
         }
@@ -191,7 +185,7 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
     // Remove an account
     $scope.removeAccount = function(index) {
         // Remove in MongoDB
-        var responsePromise = $http.post("/removeAccount", angular.toJson($scope.accounts[index]))
+        var responsePromise = $http.post("/api/removeAccount", angular.toJson($scope.accounts[index]))
         $scope.accounts.splice(index, 1);
     }
 

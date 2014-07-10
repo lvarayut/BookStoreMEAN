@@ -11,6 +11,7 @@ var flash = require('connect-flash');
 var cookieParser = require('cookie-parser');
 var morgan = require('morgan');
 var async = require('async');
+var colors = require('colors');
 var app = express();
 
 app.use(express.static(__dirname + '/public'));
@@ -50,6 +51,8 @@ if (app.get('env') === 'development') {
 require(__dirname + '/server/models/user')(mongoose);
 require(__dirname + '/server/models/product')(mongoose);
 require(__dirname + '/server/models/order')(mongoose);
+require(__dirname + '/server/models/account')(mongoose);
+
 
 // Passport
 app.use(cookieParser());
@@ -66,8 +69,10 @@ app.use(flash());
 
 
 /// Define route files
+require(__dirname + '/server/routes/setting')(app);
 require(__dirname + '/server/routes/bsmean')(app);
-require(__dirname + '/public/routes/bsmean')(app);
+
+//require(__dirname + '/public/routes/bsmean')(app);
 
 /// Error handlers
 
@@ -117,5 +122,5 @@ app.listen(3000, function() {
         }
     });
 
-    console.log("BSMEAN: listening on port 3000");
+    console.log("BSMEAN: listening on port 3000".underline.green);
 });

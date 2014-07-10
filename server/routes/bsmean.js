@@ -9,7 +9,7 @@ var User = mongoose.model('User');
 module.exports = function(app) {
 
 	// Verify whether user already logged in or not
-	var isLoggedIn = function (req, res, next) {
+	var isLoggedIn = function(req, res, next) {
 		if (req.user) {
 			next();
 		} else {
@@ -17,12 +17,6 @@ module.exports = function(app) {
 			res.redirect('/introduction');
 		}
 	};
-
-	app.get('/', isLoggedIn, function(req, res) {
-		res.render('index', {
-			user: req.user
-		});
-	});
 
 	app.get('/introduction', function(req, res) {
 		res.render('introduction', {
@@ -56,6 +50,16 @@ module.exports = function(app) {
 	app.get('/logout', function(req, res) {
 		req.logout();
 		res.redirect('/introduction');
+	});
+
+	app.get('/', isLoggedIn, function(req, res) {
+		res.render('index', {
+			user: req.user
+		});
+	});
+
+	app.get('/setting', isLoggedIn, function(req, res){
+		res.render('setting/index');
 	});
 
 	app.get('/api/loadCarts', function(req, res) {
