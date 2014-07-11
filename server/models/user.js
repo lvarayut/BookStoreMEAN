@@ -5,8 +5,8 @@
  */
 
 var passportLocalMongoose = require('passport-local-mongoose');
-var AccountSchema = require('./account').schema;
 module.exports = function(mongoose, conn) {
+	var AccountSchema = mongoose.model('Account').schema;
 	var UserSchema = mongoose.Schema({
 		firstname: {
 			type: String

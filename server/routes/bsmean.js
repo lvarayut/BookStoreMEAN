@@ -62,9 +62,12 @@ module.exports = function(app) {
 		res.render('setting/index');
 	});
 
+	app.get('/payment', isLoggedIn, function(req, res){
+		res.render('payment');
+	});
+
 	app.get('/api/loadCarts', function(req, res) {
-		//ProductController.create(req, res);
-		res.send("I'm here");
+		ProductController.findAllOrderItems(req, res);
 	});
 
 	app.get('/api/loadBooks/:count', function(req, res) {
@@ -81,6 +84,10 @@ module.exports = function(app) {
 
 	app.get('/api/description/:productId', function(req, res) {
 		ProductController.description(req, res, req.param('productId'));
+	});
+
+	app.post('/api/addToCart', function(req, res){
+		ProductController.addToCart(req, res);
 	});
 
 	// Other resquest sent to Angular routes

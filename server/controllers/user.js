@@ -57,11 +57,34 @@ exports.addAccount = function(req, res) {
 };
 
 exports.editAccount = function(req, res) {
-	var user = new User(req.user);
-	var newAccount = new Account(req.body);
-	var account = user.newAccount.id(newAccount._id);
+	var user = req.user;
+	var newAccount = req.body;
+	console.log(newAccount);
+	var account = user.accounts.id(newAccount._id);
+	account.accountId = newAccount.accountId;
+	account.type = newAccount.type;
+	account.balance = newAccount.balance;
 	console.log(account);
-	
+		console.log(newAccount);
+
+	user.save(function(err) {
+		if (err) {
+			console.error(err);
+		}
+	});
+};
+
+exports.removeAccount = function(req, res) {
+	console.log('Start removing');
+	var user = req.user;
+	var newAccount = req.body;
+	var account = user.accounts.id(newAccount._id).remove();
+	console.log('After');
+	user.save(function(err) {
+		if (err) {
+			console.error(err);
+		}
+	});
 };
 
 exports.init = function(callback) {

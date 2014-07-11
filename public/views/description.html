@@ -23,11 +23,11 @@
         </div>
     </div>
     <div class="col-xs-12 col-sm-8 col-md-8">
-        <div id="productId" data-productId="{{ product._id }}"></div>
+        <div id="productId" data-productId="{{ product._id.toString() }}"></div>
         <h3>{{ product.name }}</h3>
         <small>{{ product.author }}</small>
         <div><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></div>
-        <detail>
+        <detail>    
             {{ product.description }}
         </detail>
         <hr>

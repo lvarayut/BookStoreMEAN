@@ -168,7 +168,7 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
         // Edit
         else {
             var account = angular.copy($scope.accounts[$scope.accountIndex]);
-            var responsePromise = $http.post("/api/editAccount", account);
+            var responsePromise = $http.post("/api/editAccount", $scope.editAccount);
             $scope.accounts[$scope.accountIndex] = $scope.editAccount;
             $scope.accountIndex = null;
         }
@@ -306,7 +306,7 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
     $scope.addToCart = function() {
         var product = {};
         product.id = document.getElementById("productId").getAttribute("data-productId");
-        var responsePromise = $http.post("/addToCart", angular.toJson(product));
+        var responsePromise = $http.post("/api/addToCart", angular.toJson(product));
         responsePromise.success(function(data, status, header, config) {
             $scope.cart.push(data);
         });
