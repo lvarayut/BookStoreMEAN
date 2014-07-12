@@ -9,7 +9,7 @@ module.exports = function(mongoose, conn) {
 
 
 		productIds: {
-			type: Array,
+			type: Array
 		},
 		quantity: {
 			type: Number,

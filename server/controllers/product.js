@@ -8,7 +8,11 @@ var gfs = Grid(mongoose.connection.db, mongoose.mongo);
 var Product = mongoose.model('Product');
 var Order = mongoose.model('Order');
 
-
+/**
+ * Create a new product
+ * @param  Request req 
+ * @param  Response res 
+ */
 exports.create = function(req, res) {
 	var product = new Product({
 		name: "Product2",
@@ -22,21 +26,32 @@ exports.create = function(req, res) {
 			});
 			fs.createReadStream(product.imagePath).pipe(writeStream);
 		} else {
-			console.log(err);
+			console.error(err);
 		}
 	});
 };
 
+/**
+ * Update a given product
+ * @param  {[type]} product [description]
+ * @return {[type]}         [description]
+ */
 exports.update = function(product) {
 	product.update({
 		id: product['_id']
 	}, function(err, result) {
 		if (err) {
-			console.log('Error: cannot update product');
+			console.error('Error: cannot update product');
 		}
 	});
 };
 
+/**
+ * Find all books
+ * @param  Request req 
+ * @param  Response res 
+ * @return Book json
+ */
 exports.findAllBooks = function(req, res) {
 	Product.find(function(err, result) {
 		if (err) {
@@ -46,6 +61,13 @@ exports.findAllBooks = function(req, res) {
 	});
 };
 
+/**
+ * Find a book from a given name
+ * @param  Request req 
+ * @param  Response res 
+ * @param  String name 
+ * @return Product json
+ */
 exports.findByName = function(req, res, name) {
 	Product.find({
 		name: new RegExp(name, 'i')
@@ -58,6 +80,13 @@ exports.findByName = function(req, res, name) {
 	});
 }
 
+/**
+ * Description page
+ * @param  {Request} req 
+ * @param  {Response} res 
+ * @param  {String} productId 
+ * @return {Response} Description page
+ */
 exports.description = function(req, res, productId) {
 	Product.findOne({
 		_id: productId
@@ -71,6 +100,12 @@ exports.description = function(req, res, productId) {
 	});
 };
 
+/**
+ * Get image stream
+ * @param  {Request} req 
+ * @param  {Response} res 			
+ * @param  {String} productId 
+ */
 exports.getImage = function(req, res, productId) {
 	var readStream = gfs.createReadStream({
 		filename: productId
@@ -78,6 +113,11 @@ exports.getImage = function(req, res, productId) {
 	readStream.pipe(res);
 };
 
+/**
+ * Add a product to the cart
+ * @param  {Request} req 
+ * @param  {Response} res 
+ */
 exports.addToCart = function(req, res) {
 	var user = req.user;
 	var productId = req.body.id;
@@ -122,24 +162,33 @@ exports.addToCart = function(req, res) {
 
 };
 
+/**
+ * Find products in cart
+ * @param  {Request} req 
+ * @param  {Response} res 
+ * @return {Json} Product
+ */
 exports.findAllOrderItems = function(req, res) {
 	Order.findOne(function(err, order) {
 		if (err) {
 			return console.error(err);
+		} else if (order) {
+			Product.find({
+				_id: {
+					$in: order.productIds
+				}
+			}, function(err, result) {
+				return res.json(result);
+
+			});
 		}
-		Product.find({
-			_id: {
-				$in: order.productIds
-			}
-		}, function(err, result) {
-			return res.json(result);
-
-		});
-
-
 	});
 };
 
+/**
+ * Initialize product data
+ * @param  Function callback to async
+ */
 exports.init = function(callback) {
 	var products = Product.find(function(err, result) {
 		var User = mongoose.model('User');

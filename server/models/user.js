@@ -7,6 +7,7 @@
 var passportLocalMongoose = require('passport-local-mongoose');
 module.exports = function(mongoose, conn) {
 	var AccountSchema = mongoose.model('Account').schema;
+	var AddressSchema = mongoose.model('Address').schema;
 	var UserSchema = mongoose.Schema({
 		firstname: {
 			type: String
@@ -27,7 +28,7 @@ module.exports = function(mongoose, conn) {
 			type: [AccountSchema]
 		},
 		addresses: {
-			type: Array
+			type: [AddressSchema]
 		},
 		roles: {
 			type: Array

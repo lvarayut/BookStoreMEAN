@@ -1,16 +1,16 @@
 'use strict';
 
 /**
- * Order Schema
+ * Account Schema
  */
 
 module.exports = function(mongoose, conn) {
 	var AccountSchema = mongoose.Schema({
 		accountId: {
-			type: String,
+			type: String
 		},
 		type: {
-			type: String,
+			type: String
 		},
 		balance: {
 			type: Number,

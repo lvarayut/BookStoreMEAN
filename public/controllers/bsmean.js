@@ -87,9 +87,9 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
 
     // Load address of a current user
     $scope.loadAddresses = function() {
-        var responsePromise = $http.get("/loadAddresses");
+        var responsePromise = $http.get("/api/loadAddresses");
         responsePromise.success(function(data, status, header, config) {
-            $scope.addresses = data;
+            $scope.addresses = data || [];
         });
         responsePromise.error(function(data, status, header, config) {
             $scope.addresses = [];
@@ -110,16 +110,12 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
         if ($scope.addressIndex == null) {
             $scope.addresses.push($scope.editAddress);
             // Add to MongoDB
-            var responsePromise = $http.post("/addAddress", angular.toJson($scope.editAddress));
+            var responsePromise = $http.post("/api/addAddress", angular.toJson($scope.editAddress));
         }
         // Edit
         else {
             var address = angular.copy($scope.addresses[$scope.addressIndex]);
-            // Combine objects into one
-            for (var attributeName in $scope.editAddress) {
-                address["new" + attributeName] = $scope.editAddress[attributeName];
-            }
-            var responsePromise = $http.post("/editAddress", address);
+            var responsePromise = $http.post("/api/editAddress", $scope.editAddress);
             $scope.addresses[$scope.addressIndex] = $scope.editAddress;
             $scope.addressIndex = null;
         }
@@ -136,7 +132,7 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
     // Remove an address
     $scope.removeAddress = function(index) {
         // Remove in MongoDB
-        var responsePromise = $http.post("/removeAddress", angular.toJson($scope.addresses[index]))
+        var responsePromise = $http.post("/api/removeAddress", angular.toJson($scope.addresses[index]))
         $scope.addresses.splice(index, 1);
     }
 
@@ -334,7 +330,7 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
                 $scope.modalBody = "";
             }, 2000);
         } else {
-            var responsePromise = $http.post("/handlePayment", angular.toJson($scope.payment));
+            var responsePromise = $http.post("/api/handlePayment", angular.toJson($scope.payment));
             responsePromise.success(function(data, status, header, config) {
                 $scope.modalBody = '<div class="alert alert-success"><strong>Done!</strong>Thanks you for trusting us</div><p>Redirecting... <i class="fa fa-spinner fa-spin"></i><p>'
                 // Delay 2 seconds before redirect

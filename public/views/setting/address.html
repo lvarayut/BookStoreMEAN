@@ -1,4 +1,4 @@
-<div class="tab-pane fade" id="address">
+<div class="tab-pane fade" id="address" ng-init="loadAddresses()">
        <div class="alert alert-warning" ng-if="addresses.length == 0">
             <strong>Warning!</strong> You didn't add any address information, it is important for delivering your ordered books.
        </div>
@@ -16,11 +16,11 @@
                 </thead>
                 <tbody>
                     <tr ng-click="" ng-repeat="address in addresses track by $index">
-                        <td>{{ $index+1 }}</td>
-                        <td>{{ address.street }}</td>
-                        <td>{{ address.city }}</td>
-                        <td>{{ address.country }}</td>
-                        <td>{{ address.zipcode}}</td>
+                        <td>{[ $index+1 ]}</td>
+                        <td>{[ address.street ]}</td>
+                        <td>{[ address.city ]}</td>
+                        <td>{[ address.country ]}</td>
+                        <td>{[ address.zipcode]}</td>
                         <td>
                             <a data-toggle="modal" data-target="#myModal" class="btn btn-sm btn-primary" ng-click="editAddressForm($index)">Edit <i class="fa fa-edit"></i></a>
                             <a href="#" class="btn btn-danger" style="margin-left: 5px;" ng-click="removeAddress($index)">Delete <i class="fa fa-trash-o"></i></a>
@@ -41,7 +41,7 @@
                     <h4 class="modal-title" id="myModalLabel">Add a new address</h4>
                   </div>
                   <div class="modal-body">
-                      <form name="addressForm" class="form-horizontal" action="" method="POST" ng-init="loadAddresses()">
+                      <form name="addressForm" class="form-horizontal" action="" method="POST">
                         <div class="form-group">
                             <label class="col-sm-2 control-label">Street</label>
                             <div class="col-sm-7">

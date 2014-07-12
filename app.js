@@ -49,10 +49,11 @@ if (app.get('env') === 'development') {
 
 // Models (order is matter, subdocuments should come before parents)
 require(__dirname + '/server/models/account')(mongoose);
+require(__dirname + '/server/models/address')(mongoose);
 require(__dirname + '/server/models/user')(mongoose);
 require(__dirname + '/server/models/product')(mongoose);
 require(__dirname + '/server/models/order')(mongoose);
-
+require(__dirname + '/server/models/history')(mongoose);
 
 // Passport
 app.use(cookieParser());
@@ -69,7 +70,7 @@ app.use(flash());
 
 
 /// Define route files
-require(__dirname + '/server/routes/setting')(app);
+require(__dirname + '/server/routes/user')(app);
 require(__dirname + '/server/routes/bsmean')(app);
 
 //require(__dirname + '/public/routes/bsmean')(app);

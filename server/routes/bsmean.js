@@ -58,11 +58,11 @@ module.exports = function(app) {
 		});
 	});
 
-	app.get('/setting', isLoggedIn, function(req, res){
+	app.get('/setting', isLoggedIn, function(req, res) {
 		res.render('setting/index');
 	});
 
-	app.get('/payment', isLoggedIn, function(req, res){
+	app.get('/payment', isLoggedIn, function(req, res) {
 		res.render('payment');
 	});
 
@@ -86,7 +86,7 @@ module.exports = function(app) {
 		ProductController.description(req, res, req.param('productId'));
 	});
 
-	app.post('/api/addToCart', function(req, res){
+	app.post('/api/addToCart', function(req, res) {
 		ProductController.addToCart(req, res);
 	});
 
