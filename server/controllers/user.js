@@ -6,8 +6,9 @@ var User = mongoose.model('User');
 var Account = mongoose.model('Account');
 var Address = mongoose.model('Address');
 var Order = mongoose.model('Order');
-var History = mongoose.model('Address');
+var History = mongoose.model('History');
 var Product = mongoose.model('Product');
+var colors = require('colors');
 
 /**
  * Create a new user
@@ -198,7 +199,8 @@ exports.handlePayment = function(req, res) {
 	var addressIndex = req.body.address;
 	var accountIndex = req.body.account;
 	var sellers = [];
-	var history = new History();
+	var history = {};
+	history.products = [];
 	async.waterfall([
 		// Find an order of a current user
 		function(callback) {
@@ -226,7 +228,8 @@ exports.handlePayment = function(req, res) {
 		},
 		// Do transactions
 		function(order, products, callback) {
-			async.each(products, function(product, callback) {
+			// Each product
+			async.each(products, function(product, eachCallback) {
 				// Find seller
 				User.findOne({
 					_id: product.userId
@@ -237,62 +240,124 @@ exports.handlePayment = function(req, res) {
 					// Add history
 					history.products.push(product);
 					// Keep all sellers
-					sellers.push(sellers);
-					// Delete the product from the order
-					for(var i = 0; i<order.productIds.length;i++){
-						if(order.productIds[i] === product._id){
-							order.productIds.splice(i,1);
-						}
-					}
+					sellers.push(seller);
+					eachCallback();
 				});
-				callback(null, order, products, );
-			}, function(err, order, products) {
+			}, function(err) { // async.each callback
 				if (err) {
 					console.error(err);
 				}
-				else{
-
-				}
+				callback(null, order, products);
 			});
 		}
 
-	]);
+	], function(err, order, products) { // async.waterfall callback
+		// Begin a transaction
+		User.db.db.command({
+			beginTransaction: 1
+		}, function(err, result) {
+			if (err) {
+				console.error(err);
+			} else {
+				console.log(result);
+				async.parallel([
+					// Update buyer
+					function(callback) {
+						buyer.save(function(err) {
+							if (err) {
+								console.error(err);
+							}
+							callback();
+						});
+					},
+					// Delete order order
+					function(callback) {
+						Order.remove({
+							_id: order._id
+						}, function(err) {
+							if (err) {
+								console.error(err);
+							}
+							callback();
+						});
+					},
+
+					// Add a transaction history
+					function(callback) {
+						history.buyerId = buyer._id;
+						history.quantity = order.quantity;
+						history.total = order.total;
+						history.paymentMethod = 'Credit card';
+						var historyModel = new History(history);
+						historyModel.save(function(err) {
+							if (err) {
+								console.error(err);
+							}
+							callback();
+						});
+					},
+
+					function(callback) {
+						async.each(sellers, function(seller, eachCallback) {
+							seller.save(function(err) {
+								if (err) {
+									console.error(err);
+								}
+								eachCallback();
+							});
+						}, function(err) {
+							if (err) {
+								console.error(err);
+							}
+							callback();
+
+						});
+					}
 					// Delete the product
-	// Begin a transaction
-	User.db.db.command({
-		beginTransaction: 1
-	}, function(err, result) {
-		if (err) {
-			console.error(err);
-		}
-		console.log(result);
-	});
-
-	// If error occurred, rollback is triggered. 
-
-	User.db.db.command({
-		rollbackTransaction: 1
-	}, function(err, result) {
-		if (err) {
-			console.error(err);
-		}
-		console.log(result);
-	});
-	console.error(err);
-
-	// Add a transaction history
-	var history = new History({
-		buyerId: buyer._id,
-		quantity: order.quantity,
-		total: order.total,
-		paymentMethod: 'Credit card'
-	});
-	history.save(function(err) {
-		console.error(err);
-	});
-
-};
-
+					function(callback) {
+						async.each(products, function(product, callback) {
+							Product.remove({
+								_id: product._id
+							}, function(err) {
+								if (err) {
+									console.error(err);
+								}
+							});
+						}, function(err) {
+							if (err) {
+								console.error(err);
+							}
+							callback();
+						});
+					}
+				], function(err, result) { // callback async.parallel
+					// If error occurred, rollback is triggered. 
+					if (err) {
+						User.db.db.command({
+							rollbackTransaction: 1
+						}, function(err, result) {
+							if (err) {
+								console.error(err);
+							}
+							console.log(result);
+						});
+					} 
+					// else {
+					// 	User.db.db.command({
+					// 		commitTransaction: 1
+					// 	}, function(err, result) {
+					// 		if (err) {
+					// 			console.error(err);
+					// 		}
+					// 		console.log(result);
+					// 	});
+					// }
+				}); // close async.parallel
+			} // close else
+		}); // close begin transaction
+	}); // close async.waterfall
+	res.send(200);
+}
 /**
  * Initialize user data
  * @param  Function callback to async

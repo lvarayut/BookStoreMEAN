@@ -6,7 +6,7 @@
  */
 
 module.exports = function(mongoose, conn) {
-	var ProductSchema = mongoose.model('Product');
+	var ProductSchema = mongoose.model('Product').schema;
 	var HistorySchema = new mongoose.Schema({
 		buyerId: {
 			type: String
@@ -27,7 +27,7 @@ module.exports = function(mongoose, conn) {
 
 	mongoose.model('History', HistorySchema);
 	return {
-		name: 'Order',
+		name: 'History',
 		schema: HistorySchema
 	};
 };
