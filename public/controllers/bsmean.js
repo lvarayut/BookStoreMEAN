@@ -340,7 +340,7 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
 
             });
             responsePromise.error(function(data, status, header, config) {
-                $scope.modalBody = '<div class="alert alert-danger"><strong>Error!</strong>You already bought some books, however, the other have errors, please check your <a href="/setting" class="alert-link">bank account</a> and try again.</div>'
+                $scope.modalBody = '<div class="alert alert-danger"><strong>Error!</strong> please check your <a href="/setting" class="alert-link">bank account</a> and try again.</div>'
             });
         }
     }

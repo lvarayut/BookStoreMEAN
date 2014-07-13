@@ -17,7 +17,11 @@ var app = express();
 app.use(express.static(__dirname + '/public'));
 
 /// Connect to MongoDB
-mongoose.connect('mongodb://localhost/bsmean');
+mongoose.connect('mongodb://localhost/bsmean', {
+    server: {
+        poolSize: 1
+    }
+});
 
 // Logger
 
@@ -113,6 +117,7 @@ app.listen(3000, function() {
     var users = User.find(function(err, result) {
         if (!err && result.length === 0) {
             async.series([
+
                 function(callback) {
                     UserController.init(callback)
                 },

@@ -199,8 +199,7 @@ exports.handlePayment = function(req, res) {
 	var addressIndex = req.body.address;
 	var accountIndex = req.body.account;
 	var sellers = [];
-	var history = {};
-	history.products = [];
+	var history;
 	async.waterfall([
 		// Find an order of a current user
 		function(callback) {
@@ -209,6 +208,27 @@ exports.handlePayment = function(req, res) {
 			}, function(err, order) {
 				if (err) {
 					console.error(err);
+				}
+				callback(null, order);
+			});
+		},
+
+		// Find a history of the user
+		function(order, callback) {
+			History.findOne({
+				buyerId: buyer._id
+			}, function(err, result) {
+				// If no history found
+				if (!result) {
+					history = new History({
+						buyerId: buyer._id,
+						quantity: order.quantity,
+						total: order.total,
+						paymentMethod: 'Credit card',
+						products: []
+					});
+				} else {
+					history = result;
 				}
 				callback(null, order);
 			});
@@ -259,7 +279,7 @@ exports.handlePayment = function(req, res) {
 			if (err) {
 				console.error(err);
 			} else {
-				console.log(result);
+				console.log("BSMEAN: Transaction is started - ".green + JSON.stringify(result).green);
 				async.parallel([
 					// Update buyer
 					function(callback) {
@@ -284,12 +304,7 @@ exports.handlePayment = function(req, res) {
 
 					// Add a transaction history
 					function(callback) {
-						history.buyerId = buyer._id;
-						history.quantity = order.quantity;
-						history.total = order.total;
-						history.paymentMethod = 'Credit card';
-						var historyModel = new History(history);
-						historyModel.save(function(err) {
+						history.save(function(err) {
 							if (err) {
 								console.error(err);
 							}
@@ -312,16 +327,17 @@ exports.handlePayment = function(req, res) {
 							callback();
 
 						});
-					}
+					},
 					// Delete the product
 					function(callback) {
-						async.each(products, function(product, callback) {
+						async.each(products, function(product, eachCallback) {
 							Product.remove({
 								_id: product._id
 							}, function(err) {
 								if (err) {
 									console.error(err);
 								}
+								eachCallback();
 							});
 						}, function(err) {
 							if (err) {
@@ -339,24 +355,24 @@ exports.handlePayment = function(req, res) {
 							if (err) {
 								console.error(err);
 							}
-							console.log(result);
+							console.log("BSMEAN: Transaction is rolled back - ".red + JSON.stringify(result).red);
+							res.send(500);
 						});
-					} 
-					// else {
-					// 	User.db.db.command({
-					// 		commitTransaction: 1
-					// 	}, function(err, result) {
-					// 		if (err) {
-					// 			console.error(err);
-					// 		}
-					// 		console.log(result);
-					// 	});
-					// }
+					} else {
+						User.db.db.command({
+							commitTransaction: 1
+						}, function(err, result) {
+							if (err) {
+								console.error(err);
+							}
+							console.log("BSMEAN: Transaction is committed - ".green + JSON.stringify(result).green);
+							res.send(200);
+						});
+					}
 				}); // close async.parallel
 			} // close else
 		}); // close begin transaction
 	}); // close async.waterfall
-	res.send(200);
 }
 /**
  * Initialize user data
