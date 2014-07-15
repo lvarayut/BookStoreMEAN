@@ -82,12 +82,20 @@ module.exports = function(app) {
 		ProductController.findByName(req, res, req.query.name);
 	});
 
-	app.get('/api/description/:productId', function(req, res) {
+	app.get('/api/description/:productId', isLoggedIn, function(req, res) {
 		ProductController.description(req, res, req.param('productId'));
 	});
 
 	app.post('/api/addToCart', function(req, res) {
 		ProductController.addToCart(req, res);
+	});
+
+	app.post('/api/loadComments', function(req, res){
+		ProductController.findAllComments(req, res);
+	});
+
+	app.post('/api/addComment', function(req, res){
+		ProductController.addComment(req, res);
 	});
 
 	// Other resquest sent to Angular routes

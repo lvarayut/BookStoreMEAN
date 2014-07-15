@@ -54,6 +54,7 @@ if (app.get('env') === 'development') {
 // Models (order is matter, subdocuments should come before parents)
 require(__dirname + '/server/models/account')(mongoose);
 require(__dirname + '/server/models/address')(mongoose);
+require(__dirname + '/server/models/comment')(mongoose);
 require(__dirname + '/server/models/user')(mongoose);
 require(__dirname + '/server/models/product')(mongoose);
 require(__dirname + '/server/models/order')(mongoose);

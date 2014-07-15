@@ -7,6 +7,7 @@ var Grid = require('gridfs-stream');
 var gfs = Grid(mongoose.connection.db, mongoose.mongo);
 var Product = mongoose.model('Product');
 var Order = mongoose.model('Order');
+var Comment = mongoose.model('Comment');
 
 /**
  * Create a new product
@@ -184,6 +185,44 @@ exports.findAllOrderItems = function(req, res) {
 				}
 			}, function(err, result) {
 				return res.json(result);
+
+			});
+		}
+	});
+};
+
+exports.findAllComments = function(req, res) {
+	var product = req.body;
+	Product.findOne({
+		_id: product.id
+	}, function(err, product) {
+		if (err) {
+			console.error(err);
+		} else {
+			res.json(product.comments);
+		}
+	});
+};
+
+exports.addComment = function(req, res) {
+	var user = req.user;
+	var comment = req.body;
+	comment.user = user.username || user.firstname || user.email;
+	comment.publicationDate = new Date();
+	Product.findOne({
+		_id: comment.productId
+	}, function(err, product) {
+		if (err) {
+			console.error(err);
+		} else {
+			product.comments.push(comment);
+			product.save(function(saveErr) {
+				if (saveErr) {
+					console.error(err);
+				} else {
+
+					return res.json(comment);
+				}
 
 			});
 		}

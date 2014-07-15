@@ -187,12 +187,12 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
 
     // Add review
     $scope.reviews = [];
-    $scope.addReview = function() {
+    $scope.addComment = function() {
         // If user doesn't enter either the description field or all the input fields
         if (typeof $scope.reviewField != 'undefined' && typeof $scope.reviewField.description != 'undefined') {
             var productId = document.getElementById('productId').getAttribute('data-productId');
             $scope.reviewField.productId = productId;
-            var responsePromise = $http.post("/addReview", angular.toJson($scope.reviewField));
+            var responsePromise = $http.post("/api/addComment", angular.toJson($scope.reviewField));
             responsePromise.success(function(data, status, header, config) {
                 // In case that the user didn't login
                 if (typeof data.user == 'undefined') {
@@ -216,7 +216,7 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
     $scope.loadComments = function() {
         var product = {};
         product.id = document.getElementById('productId').getAttribute('data-productId');
-        var responsePromise = $http.post("/loadComments", angular.toJson(product));
+        var responsePromise = $http.post("/api/loadComments", angular.toJson(product));
         responsePromise.success(function(data, status, header, config) {
             $scope.rating = {
                 one: 0,

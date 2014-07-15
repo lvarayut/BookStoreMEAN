@@ -5,6 +5,7 @@
  */
 
 module.exports = function(mongoose, conn) {
+	var CommentSchema = mongoose.model('Comment').schema;
 	var ProductSchema = mongoose.Schema({
 		name: {
 			type: String
@@ -31,7 +32,7 @@ module.exports = function(mongoose, conn) {
 			type: Number
 		},
 		comments: {
-			type: Array
+			type: [CommentSchema]
 		},
 		userId: {
 			type: String
