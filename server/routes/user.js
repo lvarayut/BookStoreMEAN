@@ -37,9 +37,17 @@ module.exports = function(app) {
 	app.post('/api/removeAddress', function(req, res) {
 		UserController.removeAddress(req, res);
 	});
-	
+
 	app.post('/api/handlePayment', function(req, res) {
 		UserController.handlePayment(req, res);
+	});
+
+	app.get('/api/loadPersonalInfo', function(req, res){
+		UserController.loadPersonalInfo(req, res);
+	});
+
+	app.post('/api/changePersonalInfo', function(req, res) {
+		UserController.handleChangePersonalInfo(req, res);
 	});
 
 };

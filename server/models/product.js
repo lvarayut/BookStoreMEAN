@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * Order Schema
+ * Product Schema
  */
 
 module.exports = function(mongoose, conn) {

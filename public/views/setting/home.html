@@ -1,42 +1,41 @@
-<div class="tab-pane fade in active" id="home">
-	<form method="POST" action="">
+<div class="tab-pane fade in active" id="home" ng-init="loadPersonalInfo()">
+	<form method="POST" action="" ng-submit="changePersonalInfo()">
 		<div class="form-group">
 			<label class="col-sm-2 control-label">Firstname</label>
 			<div class="col-sm-10">
-				<input type="text" name="firstname" class="form-control" placeholder="Firstname" value="">
+				<input type="text" name="firstname" class="form-control" placeholder="Firstname" ng-model="personalInfo.firstname " value="">
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="col-sm-2 control-label">Lastname</label>
 			<div class="col-sm-10">
-				<input type="text" name="lastname" class="form-control" placeholder="Lastname" value="">
+				<input type="text" name="lastname" class="form-control" placeholder="Lastname" ng-model="personalInfo.lastname" value="">
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="col-sm-2 control-label">Email</label>
 			<div class="col-sm-10">
-				<input type="text" name="email" class="form-control" placeholder="Email" value="" required>
+				<input type="text" name="email" class="form-control" placeholder="Email" ng-model="personalInfo.email" value="" required>
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="col-sm-2 control-label">Password</label>
 			<div class="col-sm-10">
-				<input type="password" name="password" class="form-control" placeholder="Password" value="" required>
+				<input type="password" name="password" class="form-control" placeholder="New password" ng-model="personalInfo.password" value="" >
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="col-sm-2 control-label">Username</label>
 			<div class="col-sm-10">
-				<input type="text" name="username" class="form-control" placeholder="Username" value="" required>
+				<input type="text" name="username" class="form-control" placeholder="Username" ng-model="personalInfo.username" value="" required>
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="col-sm-2 control-label">Phone number</label>
 			<div class="col-sm-10">
-				<input type="text" name="phoneno" class="form-control" placeholder="Phone number" value="">
+				<input type="text" name="phoneno" class="form-control" placeholder="Phone number" ng-model="personalInfo.phoneno" value="">
 			</div>
 		</div>
-		<input name="id" type="hidden" value=''>
 		<div class="form-group">
 			<div class="col-sm-offset-2 col-sm-10">
 				<button type="submit" class="btn btn-primary">Save</button>

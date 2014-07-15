@@ -18,7 +18,7 @@ var colors = require('colors');
 exports.create = function(req, res) {
 	var user = new User();
 	user.save(function(err) {
-		if (!err) {} else {
+		if (!err) {
 			console.log(err);
 		}
 	});
@@ -49,8 +49,9 @@ exports.findAll = function() {
 	User.find(function(err, result) {
 		if (err) {
 			return console.error(err);
+		} else {
+			return res.json(result);
 		}
-		return res.json(result);
 	});
 };
 
@@ -66,8 +67,9 @@ exports.findAccounts = function(req, res) {
 	}, function(err, user) {
 		if (err) {
 			return console.error(err);
+		} else {
+			return res.json(user.accounts);
 		}
-		return res.json(user.accounts);
 	});
 };
 
@@ -135,8 +137,9 @@ exports.findAddresses = function(req, res) {
 	}, function(err, user) {
 		if (err) {
 			return console.error(err);
+		} else {
+			return res.json(user.addresses);
 		}
-		return res.json(user.addresses);
 	});
 };
 
@@ -364,9 +367,10 @@ exports.handlePayment = function(req, res) {
 						}, function(err, result) {
 							if (err) {
 								console.error(err);
+							} else {
+								console.log("BSMEAN: Transaction is committed - ".green + JSON.stringify(result).green);
+								res.send(200);
 							}
-							console.log("BSMEAN: Transaction is committed - ".green + JSON.stringify(result).green);
-							res.send(200);
 						});
 					}
 				}); // close async.parallel
@@ -374,6 +378,40 @@ exports.handlePayment = function(req, res) {
 		}); // close begin transaction
 	}); // close async.waterfall
 }
+
+exports.loadPersonalInfo = function(req, res) {
+	var user = req.user;
+	res.json(user);
+};
+
+exports.handleChangePersonalInfo = function(req, res) {
+	var user = req.user;
+	var info = req.body;
+	user.firstname = info.firstname;
+	user.lastname = info.lastname;
+	user.email = info.email;
+	user.username = info.username;
+	user.phoneno = info.phoneno;
+	// if Password isn't null
+	if (!info.password) {
+		user.setPassword(info.password, function(err, result) {
+			user.save(function(err) {
+				if (err) {
+					console.error(err);
+				}
+				res.json(user);
+			});
+		});
+	} else {
+		user.save(function(err) {
+			if (err) {
+				console.error(err);
+			}
+			res.json(user);
+		});
+	}
+};
+
 /**
  * Initialize user data
  * @param  Function callback to async

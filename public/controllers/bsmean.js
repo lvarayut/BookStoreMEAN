@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 // Ellipsis function
 var ellipsis = function(max, currentText) {
@@ -12,7 +12,7 @@ var ellipsis = function(max, currentText) {
         }
     }
     return result.trim() + "...";
-}
+};
 
 // Ellipsis in words
 $(".bs-navbar-wishlist-body a span").html(function(index, currentText) {
@@ -65,7 +65,7 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
     $scope.getRating = function(rating) {
         if (typeof rating != 'undefined' && rating != 0)
             return new Array(parseInt(rating));
-    }
+    };
 
     // Search
     $scope.searchProducts = function(name) {
@@ -75,15 +75,15 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
         });
         responsePromise.error(function(data, status, header, config) {
             $scope.products = [];
-            console.log("Error: No data found")
+            console.log("Error: No data found");
         });
-    }
+    };
 
     // Edit Book
     $scope.editBook = function(event) {
         var bookHref = event.currentTarget.attributes["data-redirect"].nodeValue;
         window.location.href = bookHref;
-    }
+    };
 
     // Load address of a current user
     $scope.loadAddresses = function() {
@@ -95,7 +95,7 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
             $scope.addresses = [];
             console.log("Error: No address found");
         });
-    }
+    };
 
     // Add a new address
     $scope.upsertAddress = function() {
@@ -121,20 +121,20 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
         }
         // Clear the address field
         $scope.editAddress = null;
-    }
+    };
 
     // Fill the form when click on the edit button
     $scope.editAddressForm = function(index) {
         $scope.editAddress = angular.copy($scope.addresses[index]);
         $scope.addressIndex = index;
-    }
+    };
 
     // Remove an address
     $scope.removeAddress = function(index) {
         // Remove in MongoDB
-        var responsePromise = $http.post("/api/removeAddress", angular.toJson($scope.addresses[index]))
+        var responsePromise = $http.post("/api/removeAddress", angular.toJson($scope.addresses[index]));
         $scope.addresses.splice(index, 1);
-    }
+    };
 
     // Load account of a current user
     $scope.loadAccounts = function() {
@@ -145,7 +145,7 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
         responsePromise.error(function(data, status, header, config) {
             console.log("Error: No address found");
         });
-    }
+    };
 
     // Add a new account
     $scope.upsertAccount = function() {
@@ -170,20 +170,20 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
         }
         // Clear the address field
         $scope.editAccount = null;
-    }
+    };
 
     // Fill the form when click on the edit button
     $scope.editAccountForm = function(index) {
         $scope.editAccount = angular.copy($scope.accounts[index]);
         $scope.accountIndex = index;
-    }
+    };
 
     // Remove an account
     $scope.removeAccount = function(index) {
         // Remove in MongoDB
         var responsePromise = $http.post("/api/removeAccount", angular.toJson($scope.accounts[index]))
         $scope.accounts.splice(index, 1);
-    }
+    };
 
     // Add review
     $scope.reviews = [];
@@ -210,7 +210,7 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
                 }
             });
         }
-    }
+    };
 
     // Load comments of the current book
     $scope.loadComments = function() {
@@ -237,7 +237,7 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
         });
 
 
-    }
+    };
 
     $scope.calculateRating = function(updatedRating) {
         for (var i = 0; i < updatedRating.length; i++) {
@@ -281,7 +281,7 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
             );
         }
 
-    }
+    };
 
     // Load items in cart
     $scope.cart = [];
@@ -296,7 +296,7 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
         responsePromise.error(function(data, status, header, config) {
             console.log("Error: no item found in the cart")
         });
-    }
+    };
 
     // Add an item into cart
     $scope.addToCart = function() {
@@ -309,7 +309,7 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
         responsePromise.error(function(data, status, header, config) {
             console.log("Error: No product found")
         });
-    }
+    };
 
     // Calculate the total price in cart
     $scope.getTotalPriceInCart = function() {
@@ -318,7 +318,7 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
             totalPrice += $scope.cart[i].price;
         }
         return totalPrice;
-    }
+    };
 
     // Handle payment
     $scope.handlePayment = function() {
@@ -343,7 +343,7 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
                 $scope.modalBody = '<div class="alert alert-danger"><strong>Error!</strong> please check your <a href="/setting" class="alert-link">bank account</a> and try again.</div>'
             });
         }
-    }
+    };
 
     // Load items in cart
     $scope.history = [];
@@ -354,7 +354,25 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
             console.dir($scope.history);
         });
         responsePromise.error(function(data, status, header, config) {
-            console.log("Error: no item found in the cart")
+            console.log("Error: no item found in the cart");
         });
-    }
+    };
+
+    $scope.loadPersonalInfo = function(){
+        var responsePromise = $http.get("/api/loadPersonalInfo");
+        responsePromise.success(function(data, status, header, config){
+            $scope.personalInfo = data;
+        });
+        responsePromise.error(function(data, status, header, config){
+            console.log("Error: no user found");
+        });
+    };
+
+    $scope.changePersonalInfo = function(){
+        console.log($scope.personalInfo);
+        var responsePromise = $http.post("/api/changePersonalInfo", $scope.personalInfo);
+        responsePromise.error(function(data, status, header, config){
+            console.log("Error: please try again");
+        });
+    };
 });

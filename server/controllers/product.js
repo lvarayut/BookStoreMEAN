@@ -10,8 +10,8 @@ var Order = mongoose.model('Order');
 
 /**
  * Create a new product
- * @param  Request req 
- * @param  Response res 
+ * @param  Request req
+ * @param  Response res
  */
 exports.create = function(req, res) {
 	var product = new Product({
@@ -48,8 +48,8 @@ exports.update = function(product) {
 
 /**
  * Find all books
- * @param  Request req 
- * @param  Response res 
+ * @param  Request req
+ * @param  Response res
  * @return Book json
  */
 exports.findAllBooks = function(req, res) {
@@ -63,9 +63,9 @@ exports.findAllBooks = function(req, res) {
 
 /**
  * Find a book from a given name
- * @param  Request req 
- * @param  Response res 
- * @param  String name 
+ * @param  Request req
+ * @param  Response res
+ * @param  String name
  * @return Product json
  */
 exports.findByName = function(req, res, name) {
@@ -82,9 +82,9 @@ exports.findByName = function(req, res, name) {
 
 /**
  * Description page
- * @param  {Request} req 
- * @param  {Response} res 
- * @param  {String} productId 
+ * @param  {Request} req
+ * @param  {Response} res
+ * @param  {String} productId
  * @return {Response} Description page
  */
 exports.description = function(req, res, productId) {
@@ -102,9 +102,9 @@ exports.description = function(req, res, productId) {
 
 /**
  * Get image stream
- * @param  {Request} req 
- * @param  {Response} res 			
- * @param  {String} productId 
+ * @param  {Request} req
+ * @param  {Response} res
+ * @param  {String} productId
  */
 exports.getImage = function(req, res, productId) {
 	var readStream = gfs.createReadStream({
@@ -115,8 +115,8 @@ exports.getImage = function(req, res, productId) {
 
 /**
  * Add a product to the cart
- * @param  {Request} req 
- * @param  {Response} res 
+ * @param  {Request} req
+ * @param  {Response} res
  */
 exports.addToCart = function(req, res) {
 	var user = req.user;
@@ -158,14 +158,19 @@ exports.addToCart = function(req, res) {
 				});
 			})
 		}
-	]);
+	], function(err) {
+		if (err) {
+			console.error(err);
+		}
+		return res.json(product);
+	});
 
 };
 
 /**
  * Find products in cart
- * @param  {Request} req 
- * @param  {Response} res 
+ * @param  {Request} req
+ * @param  {Response} res
  * @return {Json} Product
  */
 exports.findAllOrderItems = function(req, res) {
