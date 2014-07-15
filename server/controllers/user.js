@@ -393,7 +393,7 @@ exports.handleChangePersonalInfo = function(req, res) {
 	user.username = info.username;
 	user.phoneno = info.phoneno;
 	// if Password isn't null
-	if (!info.password) {
+	if (info.password) {
 		user.setPassword(info.password, function(err, result) {
 			user.save(function(err) {
 				if (err) {
