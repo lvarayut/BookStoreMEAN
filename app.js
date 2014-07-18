@@ -58,7 +58,7 @@ require(__dirname + '/server/models/comment')(mongoose);
 require(__dirname + '/server/models/user')(mongoose);
 require(__dirname + '/server/models/product')(mongoose);
 require(__dirname + '/server/models/order')(mongoose);
-require(__dirname + '/server/models/history')(mongoose);
+require(__dirname + '/server/models/xhistory')(mongoose);
 
 // Passport
 app.use(cookieParser());
@@ -113,20 +113,23 @@ app.listen(3000, function() {
     var UserController = require(__dirname + '/server/controllers/user');
     var ProductController = require(__dirname + '/server/controllers/product');
     var User = mongoose.model('User');
+    var Product = mongoose.model('Product');
 
     // Add a default data if there is no user
-    var users = User.find(function(err, result) {
-        if (!err && result.length === 0) {
-            async.series([
+    User.find(function(err, users) {
+        Product.find(function(err, products) {
+            if (!err && users.length === 0 && products.length !== 0) {
+                async.series([
 
-                function(callback) {
-                    UserController.init(callback)
-                },
-                function(callback) {
-                    ProductController.init(callback);
-                }
-            ]);
-        }
+                    function(callback) {
+                        UserController.init(callback)
+                    },
+                    function(callback) {
+                        ProductController.init(callback);
+                    }
+                ]);
+            }
+        });
     });
 
     console.log("BSMEAN: listening on port 3000".underline.green);
