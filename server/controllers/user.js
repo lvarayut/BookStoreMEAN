@@ -259,11 +259,23 @@ exports.handlePayment = function(req, res) {
 				}, function(err, seller) {
 					// Transfer money
 					buyer.accounts[accountIndex].balance -= product.price;
-					seller.accounts[0].balance += product.price;
+					var isExist = false;
+					for (var i = 0; i < sellers.length; i++) {
+						// If the seller exist, update it
+						if (sellers[i]._id.toString() === seller._id.toString()) {
+							sellers[i].accounts[0].balance += product.price;
+							isExist = true;
+							break;
+						}
+					}
+					// If the seller doesn't exist
+					if (!isExist) {
+						seller.accounts[0].balance += product.price;
+						// Keep a new seller
+						sellers.push(seller);
+					}
 					// Add history
 					history.products.push(product);
-					// Keep all sellers
-					sellers.push(seller);
 					eachCallback();
 				});
 			}, function(err) { // async.each callback
@@ -418,12 +430,18 @@ exports.handleChangePersonalInfo = function(req, res) {
  */
 exports.init = function(callback) {
 	var password = '123456789';
+	var account = new Account({
+		accountId: "FR 123 456 789",
+		type: "Saving account",
+		balance: 0
+	});
 	User.register(new User({
 		firstname: "sellerFN",
 		lastname: "sllerLN",
 		email: "seller@example.com",
 		username: "seller",
-		phoneno: "0645789631"
+		phoneno: "0645789631",
+		accounts: account
 	}), password, function(err, user) {
 		if (err) {
 			console.error(err);

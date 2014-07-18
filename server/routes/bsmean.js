@@ -59,11 +59,15 @@ module.exports = function(app) {
 	});
 
 	app.get('/setting', isLoggedIn, function(req, res) {
-		res.render('setting/index');
+		res.render('setting/index', {
+			user: req.user
+		});
 	});
 
 	app.get('/payment', isLoggedIn, function(req, res) {
-		res.render('payment');
+		res.render('payment', {
+			user: req.user
+		});
 	});
 
 	app.get('/api/loadCarts', function(req, res) {

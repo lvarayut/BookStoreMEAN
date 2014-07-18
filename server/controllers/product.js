@@ -34,8 +34,7 @@ exports.create = function(req, res) {
 
 /**
  * Update a given product
- * @param  {[type]} product [description]
- * @return {[type]}         [description]
+ * @param  {Product} product
  */
 exports.update = function(product) {
 	product.update({
@@ -96,7 +95,8 @@ exports.description = function(req, res, productId) {
 			return console.error(err);
 		}
 		return res.render('description', {
-			product: result
+			product: result,
+			user: req.user
 		});
 	});
 };
