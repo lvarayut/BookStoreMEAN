@@ -9,6 +9,7 @@ var Order = mongoose.model('Order');
 var History = mongoose.model('History');
 var Product = mongoose.model('Product');
 var colors = require('colors');
+var mysql = require('../models/mysql');
 
 /**
  * Create a new user
@@ -62,14 +63,22 @@ exports.findAll = function() {
  * @return Account json
  */
 exports.findAccounts = function(req, res) {
-	User.findOne({
-		_id: req.user._id
-	}, function(err, user) {
-		if (err) {
-			return console.error(err);
-		} else {
-			return res.json(user.accounts);
+	var user = req.user;
+	// User.findOne({
+	// 	_id: req.user._id
+	// }, function(err, user) {
+	// 	if (err) {
+	// 		return console.error(err);
+	// 	} else {
+	// 		return res.json(user.accounts);
+	// 	}
+	// });
+	mysql.Account.findAll({
+		where: {
+			userId: user._id.toString()
 		}
+	}).success(function(result) {
+		return res.json(result);
 	});
 };
 
@@ -80,13 +89,26 @@ exports.findAccounts = function(req, res) {
  */
 exports.addAccount = function(req, res) {
 	var user = req.user;
-	var account = new Account(req.body);
-	user.accounts.push(account);
-	user.save(function(err) {
-		if (err) {
-			console.error(err);
-		}
+	// var account = new Account(req.body);
+	// user.accounts.push(account);
+	// user.save(function(err) {
+	// 	if (err) {
+	// 		console.error(err);
+	// 	}
+	// });
+	var sqlAccount = mysql.Account.build({
+		accountId: req.body.accountId,
+		type: req.body.type,
+		balance: req.body.balance,
+		userId: user._id.toString()
 	});
+	sqlAccount.save()
+		.success(function() {
+			res.send(200);
+		})
+		.error(function(err) {
+			console.error(err.red);
+		});
 };
 
 /**
@@ -97,15 +119,30 @@ exports.addAccount = function(req, res) {
 exports.editAccount = function(req, res) {
 	var user = req.user;
 	var newAccount = req.body;
-	var account = user.accounts.id(newAccount._id);
-	account.accountId = newAccount.accountId;
-	account.type = newAccount.type;
-	account.balance = newAccount.balance;
+	// var account = user.accounts.id(newAccount._id);
+	// account.accountId = newAccount.accountId;
+	// account.type = newAccount.type;
+	// account.balance = newAccount.balance;
 
-	user.save(function(err) {
-		if (err) {
-			console.error(err);
+	// user.save(function(err) {
+	// 	if (err) {
+	// 		console.error(err);
+	// 	}
+	// });
+	// Find the the requested account.
+	mysql.Account.find({
+		where: {
+			id: newAccount.id
 		}
+	}).success(function(result) {
+		// Update the account
+		result.updateAttributes({
+			accountId : newAccount.accountId,
+			type : newAccount.type,
+			balance : newAccount.balance
+		}).success(function() {
+			res.send(200);
+		});
 	});
 };
 
@@ -116,12 +153,22 @@ exports.editAccount = function(req, res) {
  */
 exports.removeAccount = function(req, res) {
 	var user = req.user;
-	var newAccount = req.body;
-	var account = user.accounts.id(newAccount._id).remove();
-	user.save(function(err) {
-		if (err) {
-			console.error(err);
+	var account = req.body;
+	// var account = user.accounts.id(newAccount._id).remove();
+	// user.save(function(err) {
+	// 	if (err) {
+	// 		console.error(err);
+	// 	}
+	// });
+	mysql.Account.find({
+		where: {
+			id: account.id
 		}
+	}).success(function(result) {
+		// Update the account
+		result.destroy().success(function() {
+			res.send(200);
+		});
 	});
 };
 
@@ -306,16 +353,16 @@ exports.handlePayment = function(req, res) {
 						});
 					},
 					// Delete order order
-					function(callback) {
-						Order.remove({
-							_id: order._id
-						}, function(err) {
-							if (err) {
-								console.error(err);
-							}
-							callback();
-						});
-					},
+					// function(callback) {
+					// 	Order.remove({
+					// 		_id: order._id
+					// 	}, function(err) {
+					// 		if (err) {
+					// 			console.error(err);
+					// 		}
+					// 		callback();
+					// 	});
+					// },
 
 					// Add a transaction history
 					function(callback) {
@@ -342,25 +389,26 @@ exports.handlePayment = function(req, res) {
 							callback();
 
 						});
-					},
-					// Delete the product
-					function(callback) {
-						async.each(products, function(product, eachCallback) {
-							Product.remove({
-								_id: product._id
-							}, function(err) {
-								if (err) {
-									console.error(err);
-								}
-								eachCallback();
-							});
-						}, function(err) {
-							if (err) {
-								console.error(err);
-							}
-							callback();
-						});
 					}
+					//,
+					// Delete the product
+					// function(callback) {
+					// 	async.each(products, function(product, eachCallback) {
+					// 		Product.remove({
+					// 			_id: product._id
+					// 		}, function(err) {
+					// 			if (err) {
+					// 				console.error(err);
+					// 			}
+					// 			eachCallback();
+					// 		});
+					// 	}, function(err) {
+					// 		if (err) {
+					// 			console.error(err);
+					// 		}
+					// 		callback();
+					// 	});
+					// }
 				], function(err, result) { // callback async.parallel
 					// If error occurred, rollback is triggered. 
 					if (err) {

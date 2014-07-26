@@ -1,0 +1,13 @@
+'use strict';
+
+module.exports = function(sequelize, DataTypes) {
+	var History = sequelize.define('History', {
+		quantity: DataTypes.INTEGER,
+		total: DataTypes.DECIMAL,
+		paymentMethod: DataTypes.STRING,
+		sellerId: DataTypes.STRING,
+		productId: DataTypes.STRING
+	});
+
+	return History;
+};

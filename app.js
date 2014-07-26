@@ -12,14 +12,28 @@ var cookieParser = require('cookie-parser');
 var morgan = require('morgan');
 var async = require('async');
 var colors = require('colors');
+var db = require('./server/models/mysql')
+var Sequelize = require('sequelize');
+
 var app = express();
 
 app.use(express.static(__dirname + '/public'));
 
-/// Connect to MongoDB
+/// Connect to Database
+
+// MongoDB
 mongoose.connect('mongodb://localhost/bsmean', {
     server: {
         poolSize: 1
+    }
+});
+
+// MySQL
+db.sequelize.sync().complete(function(err) {
+    if (err) {
+        console.log('Unable to connect to the database:', err)
+    } else {
+        console.log('MySQL connection has been established successfully.'.green)
     }
 });
 
