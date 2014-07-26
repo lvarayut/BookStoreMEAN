@@ -3,6 +3,7 @@
 var mongoose = require('mongoose');
 var fs = require('fs');
 var async = require('async');
+var mysql = require('../models/mysql');
 var Grid = require('gridfs-stream');
 var gfs = Grid(mongoose.connection.db, mongoose.mongo);
 var Product = mongoose.model('Product');
@@ -123,48 +124,64 @@ exports.addToCart = function(req, res) {
 	var user = req.user;
 	var productId = req.body.id;
 	var product, order;
-	async.series([
 
-		function(callback) {
-			Product.findOne({
-				_id: productId
-			}, function(err, result) {
-				product = result;
-				callback();
-			});
-		},
-		function(callback) {
-			Order.findOne({
-				userId: user._id
-			}, function(err, result) {
-				// If user has never ordered
-				if (!result) {
-					order = new Order({
-						productIds: productId,
-						quantity: 1,
-						total: product.price,
-						userId: user._id
-					});
-				} else {
-					result.productIds.push(productId);
-					result.quantity += 1;
-					result.total += product.price
-					order = result;
-				}
-				order.save(function(err) {
-					if (err) {
-						console.error(err);
-					}
-					callback();
-				});
-			})
-		}
-	], function(err) {
-		if (err) {
-			console.error(err);
-		}
-		return res.json(product);
+	mysql.Order.build({
+		quantity: 1,
+		buyerId: user._id.toString(),
+		productId: productId
+	}).save().error(function(err) {
+		console.error(err.red);
 	});
+
+	Product.findOne({
+		_id: productId
+	}, function(err, result) {
+		res.json(result);
+	});
+
+
+	// async.series([
+
+	// 	function(callback) {
+	// 		Product.findOne({
+	// 			_id: productId
+	// 		}, function(err, result) {
+	// 			product = result;
+	// 			callback();
+	// 		});
+	// 	},
+	// 	function(callback) {
+	// 		Order.findOne({
+	// 			userId: user._id
+	// 		}, function(err, result) {
+	// 			// If user has never ordered
+	// 			if (!result) {
+	// 				order = new Order({
+	// 					productIds: productId,
+	// 					quantity: 1,
+	// 					total: product.price,
+	// 					userId: user._id
+	// 				});
+	// 			} else {
+	// 				result.productIds.push(productId);
+	// 				result.quantity += 1;
+	// 				result.total += product.price
+	// 				order = result;
+	// 			}
+	// 			order.save(function(err) {
+	// 				if (err) {
+	// 					console.error(err);
+	// 				}
+	// 				callback();
+	// 			});
+	// 		})
+	// 	}
+	// ], function(err) {
+	// 	if (err) {
+	// 		console.error(err);
+	// 	}
+	// 	return res.json(product);
+	// });
 
 };
 
@@ -175,20 +192,39 @@ exports.addToCart = function(req, res) {
  * @return {Json} Product
  */
 exports.findAllOrderItems = function(req, res) {
-	Order.findOne(function(err, order) {
-		if (err) {
-			return console.error(err);
-		} else if (order) {
-			Product.find({
-				_id: {
-					$in: order.productIds
-				}
-			}, function(err, result) {
-				return res.json(result);
-
-			});
+	var user = req.user;
+	var productIds = [];
+	mysql.Order.findAll({
+		where: {
+			buyerId: user._id.toString()
 		}
+	}).success(function(orders) {
+		for (var i = 0; i < orders.length; i++) {
+			productIds.push(orders[i].productId);
+		}
+		Product.find({
+				_id: {
+					$in: productIds
+				}
+			},
+			function(err, products) {
+				return res.json(products);
+			});
 	});
+	// Order.findOne(function(err, order) {
+	// 	if (err) {
+	// 		return console.error(err);
+	// 	} else if (order) {
+	// 		Product.find({
+	// 			_id: {
+	// 				$in: order.productIds
+	// 			}
+	// 		}, function(err, result) {
+	// 			return res.json(result);
+
+	// 		});
+	// 	}
+	// });
 };
 
 exports.findAllComments = function(req, res) {

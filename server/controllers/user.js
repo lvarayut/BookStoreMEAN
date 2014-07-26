@@ -102,13 +102,11 @@ exports.addAccount = function(req, res) {
 		balance: req.body.balance,
 		userId: user._id.toString()
 	});
-	sqlAccount.save()
-		.success(function() {
-			res.send(200);
-		})
-		.error(function(err) {
-			console.error(err.red);
-		});
+	sqlAccount.save().success(function() {
+		res.send(200);
+	}).error(function(err) {
+		console.error(err.red);
+	});
 };
 
 /**
@@ -137,9 +135,9 @@ exports.editAccount = function(req, res) {
 	}).success(function(result) {
 		// Update the account
 		result.updateAttributes({
-			accountId : newAccount.accountId,
-			type : newAccount.type,
-			balance : newAccount.balance
+			accountId: newAccount.accountId,
+			type: newAccount.type,
+			balance: newAccount.balance
 		}).success(function() {
 			res.send(200);
 		});
