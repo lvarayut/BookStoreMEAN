@@ -5,7 +5,7 @@ module.exports = function(sequelize, DataTypes) {
 		quantity: DataTypes.INTEGER,
 		total: DataTypes.DECIMAL,
 		paymentMethod: DataTypes.STRING,
-		sellerId: DataTypes.STRING,
+		buyerId: DataTypes.STRING,
 		productId: DataTypes.STRING
 	});
 

@@ -74,7 +74,7 @@
                         <h5>Choosing your payment account</h5>
                         <div class="radio" ng-repeat="account in accounts track by $index">
                             <label>
-                                <input type="radio" name="accountRadio" id="account-{[ $index ]}" ng-value="$index" ng-model="$parent.$parent.payment.account">
+                                <input type="radio" name="accountRadio" id="account-{[ $index ]}" ng-value="account.id" ng-model="$parent.$parent.payment.account">
                                 {[ account.accountId ]}, {[ account.type ]} (Balance: {[ account.balance | number:2 ]} euros)
                             </label>
                         </div>
