@@ -345,16 +345,15 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
         }
     };
 
-    // Load items in cart
+    // Load history
     $scope.history = [];
     $scope.loadHistory = function() {
-        var responsePromise = $http.get("/loadHistory");
+        var responsePromise = $http.get("/api/loadHistory");
         responsePromise.success(function(data, status, header, config) {
             $scope.history = data;
-            console.dir($scope.history);
         });
         responsePromise.error(function(data, status, header, config) {
-            console.log("Error: no item found in the cart");
+            console.log("Error: no history found");
         });
     };
 

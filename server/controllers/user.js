@@ -630,6 +630,35 @@ exports.handleChangePersonalInfo = function(req, res) {
 	}
 };
 
+exports.findHistories = function(req, res) {
+	var user = req.user;
+	mysql.History.findAll({
+		where: {
+			buyerId: user._id.toString()
+		}
+	}).success(function(histories) {
+		async.each(histories, function(history, callback) {
+			Product.findOne({
+					_id: history.productId
+				},
+				function(err, product) {
+					// Add product as one value property of history
+					history.values.product = product;
+					if(err){
+						callback(err);
+					}
+					callback();
+				});
+		}, function(err) {
+			if (err) {
+				res.send(500);
+			} else {
+				res.json(histories);
+			}
+		});
+	});
+};
+
 /**
  * Initialize user data
  * @param  Function callback to async

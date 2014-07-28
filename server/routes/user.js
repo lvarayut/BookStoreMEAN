@@ -50,4 +50,7 @@ module.exports = function(app) {
 		UserController.handleChangePersonalInfo(req, res);
 	});
 
+	app.get('/api/loadHistory', function(req, res){
+		UserController.findHistories(req, res);
+	});
 };

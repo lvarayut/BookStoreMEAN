@@ -64,6 +64,12 @@ module.exports = function(app) {
 		});
 	});
 
+	app.get('/history', isLoggedIn, function(req, res) {
+		res.render('history', {
+			user: req.user
+		});
+	});
+
 	app.get('/payment', isLoggedIn, function(req, res) {
 		res.render('payment', {
 			user: req.user
@@ -94,11 +100,11 @@ module.exports = function(app) {
 		ProductController.addToCart(req, res);
 	});
 
-	app.post('/api/loadComments', function(req, res){
+	app.post('/api/loadComments', function(req, res) {
 		ProductController.findAllComments(req, res);
 	});
 
-	app.post('/api/addComment', function(req, res){
+	app.post('/api/addComment', function(req, res) {
 		ProductController.addComment(req, res);
 	});
 
