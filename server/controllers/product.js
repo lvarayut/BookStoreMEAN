@@ -186,6 +186,53 @@ exports.addToCart = function(req, res) {
 };
 
 /**
+ * Remove the given product from cart
+ * @param  {Request} req
+ * @param  {Response} res
+ */
+exports.removeFromCart = function(req, res) {
+	var user = req.user;
+	var productId = req.body.id;
+
+	mysql.Order.destroy({
+		buyerId: user._id.toString(),
+		productId: productId
+	}).success(function() {
+		res.send(200);
+	}).error(function(err) {
+		console.error(err);
+		res.send(500);
+	});
+};
+
+/**
+ * Verify whether the product is in cart of not
+ * @param  {Request} req
+ * @param  {Response} res
+ */
+exports.isItemInCart = function(req, res) {
+	var user = req.user;
+	var productId = req.body.id;
+
+	mysql.Order.find({
+		where: {
+			buyerId: user._id.toString(),
+			productId: productId
+		}
+	}).success(function(order) {
+		if (order) res.json({
+			result: true
+		});
+		else res.json({
+			result: false
+		});
+	}).error(function(err) {
+		console.error(err);
+		res.send(500);
+	});
+};
+
+/**
  * Find products in cart
  * @param  {Request} req
  * @param  {Response} res

@@ -100,6 +100,14 @@ module.exports = function(app) {
 		ProductController.addToCart(req, res);
 	});
 
+	app.post('/api/removeFromCart', function(req, res){
+		ProductController.removeFromCart(req, res);
+	});
+
+	app.post('/api/isItemInCart', function(req, res){
+		ProductController.isItemInCart(req, res);
+	});
+
 	app.post('/api/loadComments', function(req, res) {
 		ProductController.findAllComments(req, res);
 	});

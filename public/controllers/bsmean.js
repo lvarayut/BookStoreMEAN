@@ -300,14 +300,44 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
 
     // Add an item into cart
     $scope.addToCart = function() {
+        $scope.isItemAdded = true;
         var product = {};
         product.id = document.getElementById("productId").getAttribute("data-productId");
         var responsePromise = $http.post("/api/addToCart", angular.toJson(product));
         responsePromise.success(function(data, status, header, config) {
+            // Add the product into cart
             $scope.cart.push(data);
         });
         responsePromise.error(function(data, status, header, config) {
-            console.log("Error: No product found")
+            console.error("Error: No product found");
+        });
+    };
+
+    // Remove an item from cart
+    $scope.removeFromCart = function() {
+        $scope.isItemAdded = false;
+        var product = {};
+        product.id = document.getElementById("productId").getAttribute("data-productId");
+        var responsePromise = $http.post("/api/removeFromCart", angular.toJson(product));
+        responsePromise.success(function(data, status, header, config) {
+            $scope.loadCarts();
+        });
+        responsePromise.error(function(data, status, header, config) {
+            console.error("Error: No product found");
+        });
+    };
+
+    // Verify whether the product is in cart of not
+    $scope.isItemInCart = function(){
+        var product ={};
+        product.id = document.getElementById("productId").getAttribute("data-productId");
+        var responsePromise = $http.post("/api/isItemInCart", angular.toJson(product));
+        responsePromise.success(function(data, status, header, config){
+            if(data.result) $scope.isItemAdded = true;
+            else $scope.isItemAdded = false;
+        });
+        responsePromise.error(function(data, status, header, config){
+            console.error("Cannot verify the item");
         });
     };
 
@@ -359,18 +389,18 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
 
     $scope.loadPersonalInfo = function(){
         var responsePromise = $http.get("/api/loadPersonalInfo");
-        responsePromise.success(function(data, status, header, config){
+        responsePromise.success(function(data, status, header, config) {
             $scope.personalInfo = data;
         });
-        responsePromise.error(function(data, status, header, config){
+        responsePromise.error(function(data, status, header, config) {
             console.log("Error: no user found");
         });
     };
 
-    $scope.changePersonalInfo = function(){
+    $scope.changePersonalInfo = function() {
         console.log($scope.personalInfo);
         var responsePromise = $http.post("/api/changePersonalInfo", $scope.personalInfo);
-        responsePromise.error(function(data, status, header, config){
+        responsePromise.error(function(data, status, header, config) {
             console.log("Error: please try again");
         });
     };

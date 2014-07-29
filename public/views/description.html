@@ -2,6 +2,7 @@
 
 {% block content %}
     {% include "./searchbar.html" %}
+    <div ng-init="isItemInCart()"></div>
     <!-- After Search bar -->
     <div class="row bs-detail-container" style="margin-top: 20px;">
         <div class="col-xs-12 col-sm-4 col-md-4">
@@ -36,7 +37,8 @@
                 <!--<h4>Normal price: <del><i class="glyphicon glyphicon-euro"></i> 50</del></h4>
                 <h4 style="color: red">Special price: <i class="glyphicon glyphicon-euro"></i> 30 (save 60%)</h4>-->
                 <h4>Price: <i class="glyphicon glyphicon-euro"></i> {{ product.price }}</h4>
-                <button class="btn btn-success" ng-click="addToCart()">Add to cart</button>
+                <button ng-if="!isItemAdded" class="btn btn-success" ng-click="addToCart()">Add to cart</button>
+                <button ng-if="isItemAdded" class="btn btn-danger" ng-click="removeFromCart()">Remove item</button>
             </div>
             <div class="col-xs-12 col-sm-6 col-md-6">
                 <p>Free shipping for exclusive membership <a href="#">details</a></p>
