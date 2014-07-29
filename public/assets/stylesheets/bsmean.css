@@ -343,6 +343,23 @@ html{
    }
 
 /*
+ * Message animation
+ */
+ .bs-saved-message{
+    transition: all 1s linear;
+    -o-transition: all 1s linear;
+    -moz-transition: all 1s linear;
+    -webkit-transition: all 1s linear;
+    height: 60px;
+    opacity: 1;
+ }
+
+ .bs-saved-message.ng-hide{
+    height:40px;
+    opacity: 0;
+ }
+
+/*
  * Administrator
  */
  .bs-admin-menu-wrapper > .dropdown > .dropdown-menu{

@@ -23,7 +23,7 @@ $(".bs-navbar-wishlist-body a span").html(function(index, currentText) {
 $("#reviewStar").rating();
 
 // AngularJS
-var app = angular.module("BSMEAN", ["infinite-scroll", "ngSanitize"]);
+var app = angular.module("BSMEAN", ["infinite-scroll", "ngSanitize", "ngAnimate"]);
 
 // Change angularJs syntax
 app.config(function($interpolateProvider) {
@@ -39,6 +39,7 @@ app.filter("ellipsis", function() {
 app.controller("BSMEANController", function($scope, $http, $timeout) {
     var busy = false;
     var count = 0;
+    $scope.savedMessage = false;
 
     // Load more books from DB
     $scope.loadBooks = function() {
@@ -328,15 +329,15 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
     };
 
     // Verify whether the product is in cart of not
-    $scope.isItemInCart = function(){
-        var product ={};
+    $scope.isItemInCart = function() {
+        var product = {};
         product.id = document.getElementById("productId").getAttribute("data-productId");
         var responsePromise = $http.post("/api/isItemInCart", angular.toJson(product));
-        responsePromise.success(function(data, status, header, config){
-            if(data.result) $scope.isItemAdded = true;
+        responsePromise.success(function(data, status, header, config) {
+            if (data.result) $scope.isItemAdded = true;
             else $scope.isItemAdded = false;
         });
-        responsePromise.error(function(data, status, header, config){
+        responsePromise.error(function(data, status, header, config) {
             console.error("Cannot verify the item");
         });
     };
@@ -387,7 +388,7 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
         });
     };
 
-    $scope.loadPersonalInfo = function(){
+    $scope.loadPersonalInfo = function() {
         var responsePromise = $http.get("/api/loadPersonalInfo");
         responsePromise.success(function(data, status, header, config) {
             $scope.personalInfo = data;
@@ -397,9 +398,15 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
         });
     };
 
-    $scope.changePersonalInfo = function() {
-        console.log($scope.personalInfo);
+    $scope.changePersonalInfo = function() {    
+        $scope.savedMessage = true;    
         var responsePromise = $http.post("/api/changePersonalInfo", $scope.personalInfo);
+        responsePromise.success(function(data, status, header, config) {
+            // Delay 3 seconds before redirect
+            $timeout(function() {
+                $scope.savedMessage = false;
+            }, 3000);
+        });
         responsePromise.error(function(data, status, header, config) {
             console.log("Error: please try again");
         });
