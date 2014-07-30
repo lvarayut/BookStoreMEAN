@@ -2,14 +2,15 @@
 
 var async = require('async');
 var mongoose = require('mongoose');
+var colors = require('colors');
+var mysql = require('../models/mysql');
+var stress = require('../../test/stress');
 var User = mongoose.model('User');
 var Account = mongoose.model('Account');
 var Address = mongoose.model('Address');
 var Order = mongoose.model('Order');
 var History = mongoose.model('History');
 var Product = mongoose.model('Product');
-var colors = require('colors');
-var mysql = require('../models/mysql');
 
 /**
  * Create a new user
@@ -183,7 +184,7 @@ exports.findAddresses = function(req, res) {
 		if (err) {
 			return console.error(err);
 		} else {
-			return res.json(user.addresses);
+			res.json(user.addresses);
 		}
 	});
 };
@@ -196,12 +197,13 @@ exports.findAddresses = function(req, res) {
 exports.addAddress = function(req, res) {
 	var user = req.user;
 	var address = new Address(req.body);
-	console.log('Adding');
 	user.addresses.push(address);
 	user.save(function(err) {
 		if (err) {
 			console.error(err);
+			res.send(500);
 		}
+		res.send(200);
 	});
 };
 
@@ -222,7 +224,9 @@ exports.editAddress = function(req, res) {
 	user.save(function(err) {
 		if (err) {
 			console.error(err);
+			res.send(500);
 		}
+		res.send(200);
 	});
 };
 
@@ -238,7 +242,9 @@ exports.removeAddress = function(req, res) {
 	user.save(function(err) {
 		if (err) {
 			console.error(err);
+			res.send(500);
 		}
+		res.send(200);
 	});
 };
 
@@ -392,6 +398,7 @@ exports.handlePayment = function(req, res) {
 					});
 				}
 			], function(err) {
+				err = stress.test();
 				if (err) {
 					console.error(err);
 					t.rollback().success(function() {
