@@ -24,7 +24,7 @@ app.use(express.static(__dirname + '/public'));
 // MongoDB
 mongoose.connect('mongodb://localhost/bsmean', {
     server: {
-        poolSize: 5
+        poolSize: 20
     }
 });
 

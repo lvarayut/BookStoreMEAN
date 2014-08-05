@@ -398,7 +398,7 @@ exports.handlePayment = function(req, res) {
 					});
 				}
 			], function(err) {
-				err = stress.test();
+				//err = stress.test();
 				if (err) {
 					console.error(err);
 					t.rollback().success(function() {
@@ -651,7 +651,7 @@ exports.findHistories = function(req, res) {
 				function(err, product) {
 					// Add product as one value property of history
 					history.values.product = product;
-					if(err){
+					if (err) {
 						callback(err);
 					}
 					callback();
@@ -677,17 +677,29 @@ exports.init = function(callback) {
 		type: "Saving account",
 		balance: 0
 	});
-	User.register(new User({
+	var user = new User({
 		firstname: "sellerFN",
 		lastname: "sllerLN",
 		email: "seller@example.com",
 		username: "seller",
 		phoneno: "0645789631",
 		accounts: account
-	}), password, function(err, user) {
+	});
+	User.register(user, password, function(err, user) {
 		if (err) {
 			console.error(err);
 		}
 		callback();
 	});
+
+	// Add seller account to mysql
+	mysql.Account.build({
+		accountId: "FR 123 456 789",
+		type: "Saving account",
+		balance: 0,
+		userId: user._id.toString()
+	}).save().error(function(err) {
+		console.error(err.red);
+	});
+
 };

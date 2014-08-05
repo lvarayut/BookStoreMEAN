@@ -5,7 +5,7 @@ var	Sequelize = require('sequelize');
 var	lodash = require('lodash');
 var	sequelize = new Sequelize('bsmean', 'root', 'root',{
 	maxConcurrentQueries: 100,
-	pool: { maxConnections: 5, maxIdleTime: 30}
+	pool: { maxConnections: 20, maxIdleTime: 30}
 });
 var	db = {};
 
