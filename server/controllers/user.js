@@ -50,9 +50,9 @@ exports.findOneByUserName = function(username) {
 exports.findAll = function() {
 	User.find(function(err, result) {
 		if (err) {
-			return console.error(err);
+			console.error(err);
 		} else {
-			return res.json(result);
+			res.json(result);
 		}
 	});
 };
@@ -79,7 +79,10 @@ exports.findAccounts = function(req, res) {
 			userId: user._id.toString()
 		}
 	}).success(function(result) {
-		return res.json(result);
+		res.json(result);
+	}).error(function(err) {
+		res.send(500);
+		console.error(err);
 	});
 };
 
@@ -106,7 +109,8 @@ exports.addAccount = function(req, res) {
 	sqlAccount.save().success(function() {
 		res.send(200);
 	}).error(function(err) {
-		console.error(err.red);
+		res.send(500);
+		console.error(err);
 	});
 };
 
@@ -141,6 +145,9 @@ exports.editAccount = function(req, res) {
 			balance: newAccount.balance
 		}).success(function() {
 			res.send(200);
+		}).error(function(err) {
+			res.send(500);
+			console.error(err);
 		});
 	});
 };
@@ -168,6 +175,9 @@ exports.removeAccount = function(req, res) {
 		result.destroy().success(function() {
 			res.send(200);
 		});
+	}).error(function(err) {
+		res.send(500);
+		console.error(err);
 	});
 };
 
@@ -182,7 +192,8 @@ exports.findAddresses = function(req, res) {
 		_id: req.user._id
 	}, function(err, user) {
 		if (err) {
-			return console.error(err);
+			res.send(500);
+			console.error(err);
 		} else {
 			res.json(user.addresses);
 		}
@@ -649,7 +660,7 @@ exports.findHistories = function(req, res) {
 					_id: history.productId
 				},
 				function(err, product) {
-					// Add product as one value property of history
+					// Add product as one of history property
 					history.values.product = product;
 					if (err) {
 						callback(err);
@@ -663,6 +674,9 @@ exports.findHistories = function(req, res) {
 				res.json(histories);
 			}
 		});
+	}).error(function(err) {
+		res.send(500);
+		console.error(err);
 	});
 };
 
@@ -699,7 +713,7 @@ exports.init = function(callback) {
 		balance: 0,
 		userId: user._id.toString()
 	}).save().error(function(err) {
-		console.error(err.red);
+		console.error(err);
 	});
 
 };

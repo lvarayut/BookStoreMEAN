@@ -142,8 +142,13 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
         var responsePromise = $http.get("/api/loadAccounts");
         responsePromise.success(function(data, status, header, config) {
             $scope.accounts = data || [];
+            $('#loadingModal').modal('hide');
         });
         responsePromise.error(function(data, status, header, config) {
+            $('#loadingModal').modal('show');
+            $timeout(function(){
+                $scope.loadAccounts();
+            }, 3000);
             console.log("Error: No address found");
         });
     };
@@ -292,9 +297,14 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
             // Verify if the page is not redirected
             if (typeof data[0] != "undefined" && typeof data[0]._id != "undefined") {
                 $scope.cart = data;
+                $('#loadingModal').modal('hide');
             }
         });
         responsePromise.error(function(data, status, header, config) {
+            $('#loadingModal').modal('show');
+            $timeout(function(){
+                $scope.loadCarts();
+            }, 3000);
             console.log("Error: no item found in the cart")
         });
     };
@@ -308,8 +318,13 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
         responsePromise.success(function(data, status, header, config) {
             // Add the product into cart
             $scope.cart.push(data);
+            $('#loadingModal').modal('hide');
         });
         responsePromise.error(function(data, status, header, config) {
+            $('#loadingModal').modal('show');
+            $timeout(function(){
+                $scope.addToCart();
+            }, 3000);
             console.error("Error: No product found");
         });
     };
@@ -322,8 +337,13 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
         var responsePromise = $http.post("/api/removeFromCart", angular.toJson(product));
         responsePromise.success(function(data, status, header, config) {
             $scope.loadCarts();
+             $('#loadingModal').modal('hide');
         });
         responsePromise.error(function(data, status, header, config) {
+            $('#loadingModal').modal('show');
+            $timeout(function(){
+                $scope.removeFromCart();
+            }, 3000);
             console.error("Error: No product found");
         });
     };
@@ -336,8 +356,13 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
         responsePromise.success(function(data, status, header, config) {
             if (data.result) $scope.isItemAdded = true;
             else $scope.isItemAdded = false;
+             $('#loadingModal').modal('hide');
         });
         responsePromise.error(function(data, status, header, config) {
+            $('#loadingModal').modal('show');
+            $timeout(function(){
+                $scope.isItemInCart();
+            }, 3000);
             console.error("Cannot verify the item");
         });
     };

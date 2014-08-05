@@ -130,7 +130,7 @@ exports.addToCart = function(req, res) {
 		buyerId: user._id.toString(),
 		productId: productId
 	}).save().error(function(err) {
-		console.error(err.red);
+		console.error(err);
 	});
 
 	Product.findOne({
@@ -257,6 +257,9 @@ exports.findAllOrderItems = function(req, res) {
 			function(err, products) {
 				return res.json(products);
 			});
+	}).error(function(err){
+		console.error(err);
+		res.send(500);
 	});
 	// Order.findOne(function(err, order) {
 	// 	if (err) {
@@ -281,6 +284,7 @@ exports.findAllComments = function(req, res) {
 	}, function(err, product) {
 		if (err) {
 			console.error(err);
+			res.send(500);
 		} else {
 			res.json(product.comments);
 		}
