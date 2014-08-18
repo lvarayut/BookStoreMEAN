@@ -7,14 +7,14 @@
 [![Bootstrap](http://img.shields.io/badge/bootstrap-v3.2.0-brightgreen.svg)](http://getbootstrap.com/)
 
 ## Introduction
-BookStoreMEAN is short for BookStore application developed by using [MongoDB](http://www.mongodb.org/), [Express.js](http://expressjs.com/), [Angular.js](https://angularjs.org/), and [Node.js](http://nodejs.org/). Moreover, MySQL is also used in some parts of the application. For more details about the application, please take a look at the [original version](https://github.com/lvarayut/Bookstore).
+BookStoreMEAN is short for the BookStore application developed by using [MongoDB](http://www.mongodb.org/), [Express.js](http://expressjs.com/), [Angular.js](https://angularjs.org/), and [Node.js](http://nodejs.org/). Moreover, MySQL is also used in some parts of the application. For more details about the application, please take a look at the [original version](https://github.com/lvarayut/Bookstore).
 
 ## Requirements
 As described in the [Introduction](#Introduction), these technologies should be installed in advance before installing the application. However, some of them are already included with this project. Thus, you must install just the following technologies, please follow instructions written in their official website:
 
 1. [MongoDB Installation](http://docs.mongodb.org/manual/installation/).
 2. [Node.js Installation](http://nodejs.org/download/).
-3. [MySQL](http://dev.mysql.com/downloads/installer/). 
+3. [MySQL Installation](http://dev.mysql.com/downloads/installer/). 
 
 **NOTE**: You have to manually create a database called `bsmean` in the MySQL.
 
@@ -30,7 +30,7 @@ Firstly, you need to install **Nodemon** and **Mongoose-Fixture** globally, this
 - [Mongoose-Fixture](https://github.com/mgan59/mongoose-fixture) - `sudo npm install -g mongoose-fixture`
 
 ### Dependencies
-The dependencies are incredibly easy to be installed. Basically, Node.js has [Node Packaged Modules (NPM)](https://www.npmjs.org/) that hosts all modules for Node.js. Thus, in the project, there is a file called `package.json` used to indicate required dependencies that the application is depending on. Let's start installing them:
+The dependencies are incredibly easy to be installed. Basically, Node.js has [Node Packaged Modules (NPM)](https://www.npmjs.org/) that hosts all modules for Node.js. Thus, in this project, there is a file called `package.json` used to indicate required dependencies that the application is depending on. Let's start installing them:
 
 1. Open the terminal and go the your project directory.
 2. Execute `sudo npm install`
@@ -38,6 +38,7 @@ The dependencies are incredibly easy to be installed. Basically, Node.js has [No
 ## Getting Started
 1. Run MongoDB and MySQL server
 2. Open the terminal and go the your project directory.
-3. Execute `nodemon app.js`
+3. Add data fixtures - `mongoose-fixture --fixture='all' --add`
+4. Run application - `nodemon app.js`
 
 That's it. Now, let's open your favorite browser and access `localhost:3000` to see my beautiful website!
