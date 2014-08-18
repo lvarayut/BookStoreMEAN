@@ -36,7 +36,10 @@ module.exports = function(mongoose, conn) {
 	});
 
 	UserSchema.plugin(passportLocalMongoose, {
-		usernameField: 'email'
+		usernameField: 'email',
+		usernameLowerCase: 'ture', //
+		keylen: 256, //Specifies the length in byte of the generated key.
+		iterations: 5000 //specifies the number of iterations used in pbkdf2 hashing algorithm.
 	});
  	mongoose.model('User', UserSchema)
 	return {
