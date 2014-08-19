@@ -380,7 +380,8 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
     $scope.handlePayment = function() {
         if (typeof $scope.payment == 'undefined' ||
             typeof $scope.payment.account == 'undefined' ||
-            typeof $scope.payment.address == 'undefined') {
+            typeof $scope.payment.address == 'undefined' ||
+            typeof $scope.payment.method == 'undefined') {
             $scope.modalBody = '<div class="alert alert-danger"><strong>Warning!</strong> please choose both an address and account</div>'
             $timeout(function() {
                 $scope.modalBody = "";
@@ -390,9 +391,9 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
             responsePromise.success(function(data, status, header, config) {
                 $scope.modalBody = '<div class="alert alert-success"><strong>Done!</strong>Thanks you for trusting us</div><p>Redirecting... <i class="fa fa-spinner fa-spin"></i><p>'
                 // Delay 2 seconds before redirect
-                $timeout(function() {
-                    window.location.href = "/";
-                }, 2000);
+                // $timeout(function() {
+                //     window.location.href = "/";
+                // }, 2000);
 
             });
             responsePromise.error(function(data, status, header, config) {

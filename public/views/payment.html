@@ -78,9 +78,19 @@
                                 {[ account.accountId ]}, {[ account.type ]} (Balance: {[ account.balance | number:2 ]} euros)
                             </label>
                         </div>
+                        <br>
+                        <h5>Choosing your payment method</h5>
+                        <div class="radio">
+                            <label class="radio-inline">
+                                <input type="radio" name="methodRadio" id="paypal" value="paypal" ng-model="$parent.payment.method"> Paypal                                
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="methodRadio" id="credit-card" value="credit-card" ng-model="$parent.payment.method"> Credit card                             
+                            </label>
+                        </div>                            
                     </form>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer" ng-hide="modalBody">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                     <button type="button" class="btn btn-primary" ng-click="handlePayment()">Confirm</button>
                 </div>

@@ -3,20 +3,11 @@
 var ProductController = require('../controllers/product');
 var passport = require('passport');
 var mongoose = require('mongoose');
+var utils = require('./utils');
 var User = mongoose.model('User');
 
 
 module.exports = function(app) {
-
-	// Verify whether user already logged in or not
-	var isLoggedIn = function(req, res, next) {
-		if (req.user) {
-			next();
-		} else {
-			req.flash('error', 'Please sign in');
-			res.redirect('/introduction');
-		}
-	};
 
 	app.get('/introduction', function(req, res) {
 		res.render('introduction', {
@@ -52,25 +43,25 @@ module.exports = function(app) {
 		res.redirect('/introduction');
 	});
 
-	app.get('/', isLoggedIn, function(req, res) {
+	app.get('/', utils.isLoggedIn, function(req, res) {
 		res.render('index', {
 			user: req.user
 		});
 	});
 
-	app.get('/setting', isLoggedIn, function(req, res) {
+	app.get('/setting', utils.isLoggedIn, function(req, res) {
 		res.render('setting/index', {
 			user: req.user
 		});
 	});
 
-	app.get('/history', isLoggedIn, function(req, res) {
+	app.get('/history', utils.isLoggedIn, function(req, res) {
 		res.render('history', {
 			user: req.user
 		});
 	});
 
-	app.get('/payment', isLoggedIn, function(req, res) {
+	app.get('/payment', utils.isLoggedIn, function(req, res) {
 		res.render('payment', {
 			user: req.user
 		});
@@ -92,7 +83,7 @@ module.exports = function(app) {
 		ProductController.findByName(req, res, req.query.name);
 	});
 
-	app.get('/api/description/:productId', isLoggedIn, function(req, res) {
+	app.get('/api/description/:productId', utils.isLoggedIn, function(req, res) {
 		ProductController.description(req, res, req.param('productId'));
 	});
 
@@ -100,11 +91,11 @@ module.exports = function(app) {
 		ProductController.addToCart(req, res);
 	});
 
-	app.post('/api/removeFromCart', function(req, res){
+	app.post('/api/removeFromCart', function(req, res) {
 		ProductController.removeFromCart(req, res);
 	});
 
-	app.post('/api/isItemInCart', function(req, res){
+	app.post('/api/isItemInCart', function(req, res) {
 		ProductController.isItemInCart(req, res);
 	});
 

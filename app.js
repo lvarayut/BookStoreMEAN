@@ -14,6 +14,8 @@ var async = require('async');
 var colors = require('colors');
 var db = require('./server/models/mysql')
 var Sequelize = require('sequelize');
+var paypal = require('paypal-rest-sdk');
+var fs = require("fs");
 
 var app = express();
 
@@ -87,9 +89,20 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 app.use(flash());
 
+// Initialize Paypal SDK
+try{
+    var configJSON = fs.readFileSync(__dirname + '/config.json');
+    var config = JSON.parse(configJSON.toString());
+    paypal.configure(config.api);
+} catch (e){
+    console.error('File config.json not found in the root directory or invalid: '.red + e.message);
+    process.exit(1);
+}
+
 
 /// Define route files
 require(__dirname + '/server/routes/user')(app);
+require(__dirname + '/server/routes/payment')(app);
 require(__dirname + '/server/routes/bsmean')(app);
 
 //require(__dirname + '/public/routes/bsmean')(app);

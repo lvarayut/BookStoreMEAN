@@ -38,10 +38,6 @@ module.exports = function(app) {
 		UserController.removeAddress(req, res);
 	});
 
-	app.post('/api/handlePayment', function(req, res) {
-		UserController.handlePayment(req, res);
-	});
-
 	app.get('/api/loadPersonalInfo', function(req, res){
 		UserController.loadPersonalInfo(req, res);
 	});
