@@ -378,6 +378,7 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
 
     // Handle payment
     $scope.handlePayment = function() {
+        // If the form are not filled
         if (typeof $scope.payment == 'undefined' ||
             typeof $scope.payment.account == 'undefined' ||
             typeof $scope.payment.address == 'undefined' ||
@@ -387,18 +388,23 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
                 $scope.modalBody = "";
             }, 2000);
         } else {
-            var responsePromise = $http.post("/api/handlePayment", angular.toJson($scope.payment));
-            responsePromise.success(function(data, status, header, config) {
-                $scope.modalBody = '<div class="alert alert-success"><strong>Done!</strong>Thanks you for trusting us</div><p>Redirecting... <i class="fa fa-spinner fa-spin"></i><p>'
-                // Delay 2 seconds before redirect
-                // $timeout(function() {
-                //     window.location.href = "/";
-                // }, 2000);
+            // Paypal case or Credit card
+            if($scope.payment.method === 'paypal'){
+                window.location.href = '/api/paypal-create';
+            } else if($scope.payment.method === 'credit-card'){
+            var responsePromise = $http.post('/api/credit-create', angular.toJson($scope.payment));
+                responsePromise.success(function(data, status, header, config) {
+                    $scope.modalBody = '<div class="alert alert-success"><strong>Done!</strong>Thanks you for trusting us</div><p>Redirecting... <i class="fa fa-spinner fa-spin"></i><p>'
+                    // Delay 2 seconds before redirect
+                    $timeout(function() {
+                        window.location.href = "/";
+                    }, 2000);
 
-            });
-            responsePromise.error(function(data, status, header, config) {
-                $scope.modalBody = '<div class="alert alert-danger"><strong>Error!</strong> please check your <a href="/setting" class="alert-link">bank account</a> and try again.</div>'
-            });
+                });
+                responsePromise.error(function(data, status, header, config) {
+                    $scope.modalBody = '<div class="alert alert-danger"><strong>Error!</strong> please check your <a href="/setting" class="alert-link">bank account</a> and try again.</div>'
+                });
+            }
         }
     };
 

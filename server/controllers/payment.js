@@ -1,17 +1,19 @@
 'use strict';
 
+var async = require('async');
+var mongoose = require('mongoose');
+var colors = require('colors');
+var mysql = require('../models/mysql');
+var stress = require('../../test/stress');
 var paypal = require('paypal-rest-sdk');
+var User = mongoose.model('User');
+var Account = mongoose.model('Account');
+var Address = mongoose.model('Address');
+var Order = mongoose.model('Order');
+var History = mongoose.model('History');
+var Product = mongoose.model('Product');
 
-exports.handlePayment = function(req, res) {
-    var method = req.body.method;
-    if (method === 'paypal') {
-        createPaypal(req,res);
-    } else if (method === 'credit-card') {
-        createCreditCard(req,res);
-    }
-};
-
-exports.createPaypal = function(req, res) {
+exports.createPaypal = function (req, res) {
     // Generate a payment json
     var payment = {
         "intent": "sale",
@@ -27,7 +29,7 @@ exports.createPaypal = function(req, res) {
                 "currency": "EUR",
                 "total": "1.00"
             },
-            "description": "Purchasing a book"
+            "description": "BSMEAN: Purchasing a book"
         }]
     };
 
@@ -51,7 +53,7 @@ exports.createPaypal = function(req, res) {
             }
         }
     });
-};
+}
 
 exports.executePaypal = function(req, res) {
     var paymentId = req.session.paymentId;
@@ -69,11 +71,11 @@ exports.executePaypal = function(req, res) {
             res.send(200);
         }
     });
-};
+}
 
 exports.cancelPaypal = function(req, res) {
     res.sned('The payment has been canceled');
-};
+}
 
 exports.createCreditCard = function(req, res) {
     var buyer = req.user;
@@ -243,6 +245,7 @@ exports.createCreditCard = function(req, res) {
             //});
         }); // end transaction
     });
+
     // async.waterfall([
     //  // Find an order of a current user
     //  function(callback) {

@@ -63,6 +63,15 @@
                     </div>
 
                     <form name="addressForm" class="form-horizontal" action="" method="POST" ng-if="addresses.length != 0 && accounts.length != 0 && !modalBody">
+                        <h5>Choosing your payment method</h5>
+                        <div class="radio">
+                            <label class="radio-inline">
+                                <input type="radio" name="methodRadio" id="paypal" value="paypal" ng-model="$parent.payment.method"> Paypal                                
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="methodRadio" id="credit-card" value="credit-card" ng-model="$parent.payment.method"> Credit card                             
+                            </label>
+                        </div>                          
                         <h5>Choosing your address</h5>
                         <div class="radio" ng-repeat="address in addresses track by $index">
                             <label>
@@ -78,16 +87,6 @@
                                 {[ account.accountId ]}, {[ account.type ]} (Balance: {[ account.balance | number:2 ]} euros)
                             </label>
                         </div>
-                        <br>
-                        <h5>Choosing your payment method</h5>
-                        <div class="radio">
-                            <label class="radio-inline">
-                                <input type="radio" name="methodRadio" id="paypal" value="paypal" ng-model="$parent.payment.method"> Paypal                                
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio" name="methodRadio" id="credit-card" value="credit-card" ng-model="$parent.payment.method"> Credit card                             
-                            </label>
-                        </div>                            
                     </form>
                 </div>
                 <div class="modal-footer" ng-hide="modalBody">
