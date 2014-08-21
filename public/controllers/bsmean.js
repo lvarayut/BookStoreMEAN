@@ -146,7 +146,7 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
         });
         responsePromise.error(function(data, status, header, config) {
             $('#loadingModal').modal('show');
-            $timeout(function(){
+            $timeout(function() {
                 $scope.loadAccounts();
             }, 3000);
             console.log("Error: No address found");
@@ -302,7 +302,7 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
         });
         responsePromise.error(function(data, status, header, config) {
             $('#loadingModal').modal('show');
-            $timeout(function(){
+            $timeout(function() {
                 $scope.loadCarts();
             }, 3000);
             console.log("Error: no item found in the cart")
@@ -322,7 +322,7 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
         });
         responsePromise.error(function(data, status, header, config) {
             $('#loadingModal').modal('show');
-            $timeout(function(){
+            $timeout(function() {
                 $scope.addToCart();
             }, 3000);
             console.error("Error: No product found");
@@ -337,11 +337,11 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
         var responsePromise = $http.post("/api/removeFromCart", angular.toJson(product));
         responsePromise.success(function(data, status, header, config) {
             $scope.loadCarts();
-             $('#loadingModal').modal('hide');
+            $('#loadingModal').modal('hide');
         });
         responsePromise.error(function(data, status, header, config) {
             $('#loadingModal').modal('show');
-            $timeout(function(){
+            $timeout(function() {
                 $scope.removeFromCart();
             }, 3000);
             console.error("Error: No product found");
@@ -356,11 +356,11 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
         responsePromise.success(function(data, status, header, config) {
             if (data.result) $scope.isItemAdded = true;
             else $scope.isItemAdded = false;
-             $('#loadingModal').modal('hide');
+            $('#loadingModal').modal('hide');
         });
         responsePromise.error(function(data, status, header, config) {
             $('#loadingModal').modal('show');
-            $timeout(function(){
+            $timeout(function() {
                 $scope.isItemInCart();
             }, 3000);
             console.error("Cannot verify the item");
@@ -378,21 +378,21 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
 
     // Handle payment
     $scope.handlePayment = function() {
-        // If the form are not filled
-        if (typeof $scope.payment == 'undefined' ||
-            typeof $scope.payment.account == 'undefined' ||
-            typeof $scope.payment.address == 'undefined' ||
-            typeof $scope.payment.method == 'undefined') {
-            $scope.modalBody = '<div class="alert alert-danger"><strong>Warning!</strong> please choose both an address and account</div>'
-            $timeout(function() {
-                $scope.modalBody = "";
-            }, 2000);
-        } else {
-            // Paypal case or Credit card
-            if($scope.payment.method === 'paypal'){
-                window.location.href = '/api/paypal-create';
-            } else if($scope.payment.method === 'credit-card'){
-            var responsePromise = $http.post('/api/credit-create', angular.toJson($scope.payment));
+        if ($scope.payment.method === 'paypal') {
+            window.location.href = '/api/paypal-create';
+        } else if ($scope.payment.method === 'credit-card') {
+            // If the form are not filled
+            if (typeof $scope.payment == 'undefined' ||
+                typeof $scope.payment.account == 'undefined' ||
+                typeof $scope.payment.address == 'undefined') {
+                $scope.modalBody = '<div class="alert alert-danger"><strong>Warning!</strong> please choose both an address and account</div>'
+                $timeout(function() {
+                    $scope.modalBody = "";
+                }, 2000);
+            } else {
+                // Paypal case or Credit card
+
+                var responsePromise = $http.post('/api/credit-create', angular.toJson($scope.payment));
                 responsePromise.success(function(data, status, header, config) {
                     $scope.modalBody = '<div class="alert alert-success"><strong>Done!</strong>Thanks you for trusting us</div><p>Redirecting... <i class="fa fa-spinner fa-spin"></i><p>'
                     // Delay 2 seconds before redirect
@@ -405,6 +405,7 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
                     $scope.modalBody = '<div class="alert alert-danger"><strong>Error!</strong> please check your <a href="/setting" class="alert-link">bank account</a> and try again.</div>'
                 });
             }
+
         }
     };
 
@@ -430,8 +431,8 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
         });
     };
 
-    $scope.changePersonalInfo = function() {    
-        $scope.savedMessage = true;    
+    $scope.changePersonalInfo = function() {
+        $scope.savedMessage = true;
         var responsePromise = $http.post("/api/changePersonalInfo", $scope.personalInfo);
         responsePromise.success(function(data, status, header, config) {
             // Delay 3 seconds before redirect

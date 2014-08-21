@@ -72,16 +72,16 @@
                                 <input type="radio" name="methodRadio" id="credit-card" value="credit-card" ng-model="$parent.payment.method"> Credit card                             
                             </label>
                         </div>                          
-                        <h5>Choosing your address</h5>
-                        <div class="radio" ng-repeat="address in addresses track by $index">
+                        <h5  ng-show="$parent.payment.method === 'credit-card'">Choosing your address</h5>
+                        <div  ng-show="$parent.payment.method === 'credit-card'" class="radio" ng-repeat="address in addresses track by $index">
                             <label>
                                 <input type="radio" name="addressRadio" id="address-{[ $index ]}" ng-value="$index" ng-model="$parent.$parent.payment.address">
                                 {[ address.street ]}, {[ address.city ]}, {[ address.country ]}, {[ address.zipcode ]}
                             </label>
                         </div>
                         <br>
-                        <h5>Choosing your payment account</h5>
-                        <div class="radio" ng-repeat="account in accounts track by $index">
+                        <h5 ng-show="$parent.payment.method === 'credit-card'" >Choosing your payment account</h5>
+                        <div  ng-show="$parent.payment.method === 'credit-card'" class="radio" ng-repeat="account in accounts track by $index">
                             <label>
                                 <input type="radio" name="accountRadio" id="account-{[ $index ]}" ng-value="account.id" ng-model="$parent.$parent.payment.account">
                                 {[ account.accountId ]}, {[ account.type ]} (Balance: {[ account.balance | number:2 ]} euros)

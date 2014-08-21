@@ -238,7 +238,7 @@ exports.isItemInCart = function(req, res) {
  * @param  {Response} res
  * @return {Json} Product
  */
-exports.findAllOrderItems = function(req, res) {
+exports.findAllOrderItems = function(req, res, callback) {
 	var user = req.user;
 	var productIds = [];
 	mysql.Order.findAll({
@@ -255,6 +255,9 @@ exports.findAllOrderItems = function(req, res) {
 				}
 			},
 			function(err, products) {
+				if(callback){
+					return callback(req, res, products);
+				}
 				return res.json(products);
 			});
 	}).error(function(err){

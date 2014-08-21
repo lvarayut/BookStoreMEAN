@@ -6,6 +6,7 @@ var colors = require('colors');
 var mysql = require('../models/mysql');
 var stress = require('../../test/stress');
 var paypal = require('paypal-rest-sdk');
+var ProductController = require('./product');
 var User = mongoose.model('User');
 var Account = mongoose.model('Account');
 var Address = mongoose.model('Address');
@@ -13,53 +14,75 @@ var Order = mongoose.model('Order');
 var History = mongoose.model('History');
 var Product = mongoose.model('Product');
 
-exports.createPaypal = function (req, res) {
-    // Generate a payment json
-    var payment = {
-        "intent": "sale",
-        "payer": {
-            "payment_method": "paypal"
-        },
-        "redirect_urls": {
-            "return_url": "http://localhost:3000",
-            "cancel_url": "http://localhost:3000/payment"
-        },
-        "transactions": [{
-            "amount": {
-                "currency": "EUR",
-                "total": "1.00"
-            },
-            "description": "BSMEAN: Purchasing a book"
-        }]
-    };
+function generatePaypalJSON(req, res, callback) {
 
-    // Generate a payment
-    paypal.payment.create(payment, function(err, payment) {
-        if (err) {
-            console.error(err);
-        } else {
-            // Only paypal method has a redirect link
-            if (payment.payer.payment_method === 'paypal') {
-                // Keep the payment id in the session
-                req.session.paymentId = payment.id;
-                var redirectUrl;
-                for (var i = 0; i < payment.links.length; i++) {
-                    var link = payment.links[i];
-                    if (link.method === 'REDIRECT') {
-                        redirectUrl = link.href;
-                    }
-                }
-                res.redirect(redirectUrl);
-            }
+    // Find products in cart
+    ProductController.findAllOrderItems(req, res, function(req, res, products) {
+        var payment;
+        var names = "";
+        var total = 0;
+        for (var i = 0; i < products.length; i++) {
+            names += products[i].name;
+            if (i !== products.length - 1) names += ', ';
+            total += products[i].price;
         }
+        // Generate a payment json
+        var payment = {
+            "intent": "sale",
+            "payer": {
+                "payment_method": "paypal"
+            },
+            "redirect_urls": {
+                "return_url": "http://localhost:3000/api/paypal-execute",
+                "cancel_url": "http://localhost:3000/payment"
+            },
+            "transactions": [{
+                "amount": {
+                    "total": parseFloat(total).toFixed(2),
+                    "currency": "EUR"
+                },
+                "description": names
+            }]
+        };
+
+        callback(res, req, payment);
     });
 }
 
+
+
+exports.createPaypal = function(req, res) {
+
+    generatePaypalJSON(req, res, function(res, req, payment) {
+        // Generate a payment
+        paypal.payment.create(payment, function(err, payment) {
+            if (err) {
+                console.error(err);
+            } else {
+                // Only paypal method has a redirect link
+                if (payment.payer.payment_method === 'paypal') {
+                    // Keep the payment id in the session
+                    req.session.paymentId = payment.id;
+                    var redirectUrl;
+                    for (var i = 0; i < payment.links.length; i++) {
+                        var link = payment.links[i];
+                        if (link.method === 'REDIRECT') {
+                            redirectUrl = link.href;
+                        }
+                    }
+                    res.redirect(redirectUrl);
+                }
+            }
+        });
+    });
+
+}
+
 exports.executePaypal = function(req, res) {
+    var buyer = req.user;
     var paymentId = req.session.paymentId;
     // The payer id was returned when the user approved the payment
     var payerId = req.param('PayerID');
-
     var details = {
         "payer_id": payerId
     };
@@ -68,13 +91,21 @@ exports.executePaypal = function(req, res) {
         if (err) {
             console.error(err);
         } else {
-            res.send(200);
+            mysql.Order.destroy({
+                buyerId: buyer._id.toString()
+            }).success(function() {
+                console.log('BSMEAN: The payment has been done successfully'.green);
+                res.redirect('/');
+            }).error(function(err) {
+                callback(err);
+            });
+
         }
     });
 }
 
 exports.cancelPaypal = function(req, res) {
-    res.sned('The payment has been canceled');
+    res.send('The payment has been canceled');
 }
 
 exports.createCreditCard = function(req, res) {
