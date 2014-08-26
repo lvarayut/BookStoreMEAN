@@ -7,6 +7,7 @@ var mysql = require('../models/mysql');
 var stress = require('../../test/stress');
 var paypal = require('paypal-rest-sdk');
 var ProductController = require('./product');
+var OrderController = require('./order');
 var User = mongoose.model('User');
 var Account = mongoose.model('Account');
 var Address = mongoose.model('Address');
@@ -14,18 +15,37 @@ var Order = mongoose.model('Order');
 var History = mongoose.model('History');
 var Product = mongoose.model('Product');
 
-function generatePaypalJSON(req, res, callback) {
-
+/**
+ * Calcuate a total price and generate a description
+ * @param  {Request}   req      
+ * @param  {Response}   res      
+ * @param  {Function} callback from the generate json
+ */
+function sumarizeProduct(req, res, callback) {
     // Find products in cart
     ProductController.findAllOrderItems(req, res, function(req, res, products) {
         var payment;
-        var names = "";
+        var description = "";
         var total = 0;
         for (var i = 0; i < products.length; i++) {
-            names += products[i].name;
-            if (i !== products.length - 1) names += ', ';
+            description += products[i].name + ': ' + products[i].price;
+            if (i !== products.length - 1) description += ',/n ';
             total += products[i].price;
         }
+        description += '/n Total: ' + total;
+        if (callback) callback(req, res, description, total)
+    });
+
+}
+
+/**
+ * Generate a paypal object
+ * @param  {Request}   req      
+ * @param  {Response}  res   
+ * @param  {Function} callback from the create function
+ */
+function generatePaypalJSON(req, res, callback) {
+    sumarizeProduct(req, res, function(req, res, description, total) {
         // Generate a payment json
         var payment = {
             "intent": "sale",
@@ -41,16 +61,55 @@ function generatePaypalJSON(req, res, callback) {
                     "total": parseFloat(total).toFixed(2),
                     "currency": "EUR"
                 },
-                "description": names
+                "description": description
             }]
         };
+        if (callback) callback(res, req, payment);
+    });
+}
 
-        callback(res, req, payment);
+/**
+ * Generate a credit object
+ * @param  {Request}   req      
+ * @param  {Response}  res   
+ * @param  {Function} callback from the create function
+ */
+function generateCreditJSON(req, res, callback) {
+    sumarizeProduct(req, res, function(req, res, description, total) {
+        var payment = {
+            "intent": "sale",
+            "payer": {
+                "payment_method": "credit_card",
+                "funding_instruments": [{
+                    "credit_card": {
+                        "number": "5500005555555559",
+                        "type": "mastercard",
+                        "expire_month": 12,
+                        "expire_year": 2018,
+                        "cvv2": 111,
+                        "first_name": "Joe",
+                        "last_name": "Shopper"
+                    }
+                }]
+            },
+            "transactions": [{
+                "amount": {
+                    "total": parseFloat(total).toFixed(2),
+                    "currency": "EUR"
+                },
+                "description": description
+            }]
+        };
+        if (callback) callback(req, res, payment);
     });
 }
 
 
-
+/**
+ * Create paypal for getting ready to be executed
+ * @param  {Request}   req      
+ * @param  {Response}  res   
+ */
 exports.createPaypal = function(req, res) {
 
     generatePaypalJSON(req, res, function(res, req, payment) {
@@ -78,6 +137,11 @@ exports.createPaypal = function(req, res) {
 
 }
 
+/**
+ * Execute paypal using the created object
+ * @param  {Request}   req      
+ * @param  {Response}  res   
+ */
 exports.executePaypal = function(req, res) {
     var buyer = req.user;
     var paymentId = req.session.paymentId;
@@ -91,24 +155,47 @@ exports.executePaypal = function(req, res) {
         if (err) {
             console.error(err);
         } else {
-            mysql.Order.destroy({
-                buyerId: buyer._id.toString()
-            }).success(function() {
-                console.log('BSMEAN: The payment has been done successfully'.green);
-                res.redirect('/');
-            }).error(function(err) {
-                callback(err);
+            OrderController.removeAll(buyer, function(err){
+                if(err) res.send(500);
+                else res.redirect('/');
             });
-
         }
     });
 }
 
+/**
+ * Cancel the payment
+ * @param  {Request}   req      
+ * @param  {Response}  res  
+ */
 exports.cancelPaypal = function(req, res) {
     res.send('The payment has been canceled');
 }
 
-exports.createCreditCard = function(req, res) {
+/**
+ * Create and Execute the credit card
+ * @param  {Request}   req      
+ * @param  {Response}  res 
+ */
+exports.createExecuteCreditCard = function(req, res) {
+    generateCreditJSON(req, res, function(req, res, payment) {
+        // Generate a payment
+        paypal.payment.create(payment, function(err, payment) {
+            if (err) {
+                console.error(err);
+            } else {
+                res.redirect('/');
+            }
+        });
+    });
+}
+
+/**
+ * Create and execute by using BookStore system
+ * @param  {Request}   req      
+ * @param  {Response}  res 
+ */
+exports.createExecuteBSSystem = function(req, res) {
     var buyer = req.user;
     var addressIndex = req.body.address;
     var accountId = req.body.account;

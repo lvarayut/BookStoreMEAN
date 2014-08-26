@@ -16,7 +16,11 @@ module.exports = function(app) {
         PaymentController.cancelPaypal(req,res);
     });
 
-	app.post('/api/credit-create', function(req, res) {
-		PaymentController.createCreditCard(req, res);
+	app.get('/api/credit-create', utils.isLoggedIn, function(req, res) {
+		PaymentController.createExecuteCreditCard(req, res);
 	});
+
+    app.post('/api/bs-system', utils.isLoggedIn, function(req, res) {
+        PaymentController.createExecuteBSSystem(req, res);
+    });    
 };

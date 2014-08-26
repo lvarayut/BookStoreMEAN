@@ -40,7 +40,11 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
     var busy = false;
     var count = 0;
     $scope.savedMessage = false;
-
+    $scope.months = ['Jan', 'Feb', 'Mar', 'May', 'Jun', 'July', 'Aug', 'Sep', 'Nov', 'Dec'];
+    $scope.years = [];
+    for(var i = new Date().getFullYear(); i < new Date().getFullYear()+5; i++){
+        $scope.years.push(i);
+    }
     // Load more books from DB
     $scope.loadBooks = function() {
         if (busy) return;
@@ -381,18 +385,18 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
         if ($scope.payment.method === 'paypal') {
             window.location.href = '/api/paypal-create';
         } else if ($scope.payment.method === 'credit-card') {
+            window.location.href = '/api/credit-create'
+        } else if ($scope.payment.method === 'bs-system') {
             // If the form are not filled
             if (typeof $scope.payment == 'undefined' ||
                 typeof $scope.payment.account == 'undefined' ||
                 typeof $scope.payment.address == 'undefined') {
-                $scope.modalBody = '<div class="alert alert-danger"><strong>Warning!</strong> please choose both an address and account</div>'
                 $timeout(function() {
                     $scope.modalBody = "";
                 }, 2000);
             } else {
-                // Paypal case or Credit card
-
-                var responsePromise = $http.post('/api/credit-create', angular.toJson($scope.payment));
+                // BookStore system
+                var responsePromise = $http.post('/api/bs-system', angular.toJson($scope.payment));
                 responsePromise.success(function(data, status, header, config) {
                     $scope.modalBody = '<div class="alert alert-success"><strong>Done!</strong>Thanks you for trusting us</div><p>Redirecting... <i class="fa fa-spinner fa-spin"></i><p>'
                     // Delay 2 seconds before redirect
