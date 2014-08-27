@@ -17,8 +17,8 @@ var Product = mongoose.model('Product');
 
 /**
  * Calcuate a total price and generate a description
- * @param  {Request}   req      
- * @param  {Response}   res      
+ * @param  {Request}   req
+ * @param  {Response}   res
  * @param  {Function} callback from the generate json
  */
 function sumarizeProduct(req, res, callback) {
@@ -29,10 +29,10 @@ function sumarizeProduct(req, res, callback) {
         var total = 0;
         for (var i = 0; i < products.length; i++) {
             description += products[i].name + ': ' + products[i].price;
-            if (i !== products.length - 1) description += ',/n ';
+            if (i !== products.length - 1) description += ', ';
             total += products[i].price;
         }
-        description += '/n Total: ' + total;
+        description += ' | Total: ' + total + ' euros';
         if (callback) callback(req, res, description, total)
     });
 
@@ -40,8 +40,8 @@ function sumarizeProduct(req, res, callback) {
 
 /**
  * Generate a paypal object
- * @param  {Request}   req      
- * @param  {Response}  res   
+ * @param  {Request}   req
+ * @param  {Response}  res
  * @param  {Function} callback from the create function
  */
 function generatePaypalJSON(req, res, callback) {
@@ -70,25 +70,27 @@ function generatePaypalJSON(req, res, callback) {
 
 /**
  * Generate a credit object
- * @param  {Request}   req      
- * @param  {Response}  res   
+ * @param  {Request}   req
+ * @param  {Response}  res
  * @param  {Function} callback from the create function
  */
 function generateCreditJSON(req, res, callback) {
+
     sumarizeProduct(req, res, function(req, res, description, total) {
+        var paymentDetail = req.body;
         var payment = {
             "intent": "sale",
             "payer": {
                 "payment_method": "credit_card",
                 "funding_instruments": [{
                     "credit_card": {
-                        "number": "5500005555555559",
-                        "type": "mastercard",
-                        "expire_month": 12,
-                        "expire_year": 2018,
-                        "cvv2": 111,
-                        "first_name": "Joe",
-                        "last_name": "Shopper"
+                        "number": paymentDetail.cardNumber.toString(),
+                        "type": paymentDetail.cardType.toString(),
+                        "expire_month": parseInt(paymentDetail.expireMonth) + 1,
+                        "expire_year": paymentDetail.expireYear,
+                        "cvv2": paymentDetail.cvv,
+                        "first_name": paymentDetail.firstName.toString(),
+                        "last_name": paymentDetail.lastName.toString()
                     }
                 }]
             },
@@ -107,8 +109,8 @@ function generateCreditJSON(req, res, callback) {
 
 /**
  * Create paypal for getting ready to be executed
- * @param  {Request}   req      
- * @param  {Response}  res   
+ * @param  {Request}   req
+ * @param  {Response}  res
  */
 exports.createPaypal = function(req, res) {
 
@@ -139,8 +141,8 @@ exports.createPaypal = function(req, res) {
 
 /**
  * Execute paypal using the created object
- * @param  {Request}   req      
- * @param  {Response}  res   
+ * @param  {Request}   req
+ * @param  {Response}  res
  */
 exports.executePaypal = function(req, res) {
     var buyer = req.user;
@@ -155,8 +157,8 @@ exports.executePaypal = function(req, res) {
         if (err) {
             console.error(err);
         } else {
-            OrderController.removeAll(buyer, function(err){
-                if(err) res.send(500);
+            OrderController.removeAll(buyer, function(err) {
+                if (err) console.error(err);
                 else res.redirect('/');
             });
         }
@@ -165,26 +167,31 @@ exports.executePaypal = function(req, res) {
 
 /**
  * Cancel the payment
- * @param  {Request}   req      
- * @param  {Response}  res  
+ * @param  {Request}   req
+ * @param  {Response}  res
  */
 exports.cancelPaypal = function(req, res) {
-    res.send('The payment has been canceled');
+    res.send(500);
 }
 
 /**
  * Create and Execute the credit card
- * @param  {Request}   req      
- * @param  {Response}  res 
+ * @param  {Request}   req
+ * @param  {Response}  res
  */
 exports.createExecuteCreditCard = function(req, res) {
     generateCreditJSON(req, res, function(req, res, payment) {
+        var buyer = req.user;
         // Generate a payment
         paypal.payment.create(payment, function(err, payment) {
             if (err) {
                 console.error(err);
+                res.send(500);
             } else {
-                res.redirect('/');
+                OrderController.removeAll(buyer, function(err) {
+                    if (err) res.send(500);
+                    else res.send(200);
+                });
             }
         });
     });
@@ -192,8 +199,8 @@ exports.createExecuteCreditCard = function(req, res) {
 
 /**
  * Create and execute by using BookStore system
- * @param  {Request}   req      
- * @param  {Response}  res 
+ * @param  {Request}   req
+ * @param  {Response}  res
  */
 exports.createExecuteBSSystem = function(req, res) {
     var buyer = req.user;

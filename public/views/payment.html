@@ -104,7 +104,7 @@
                                     Visa
                                 </label>
                                 <label class="radio-inline">
-                                    <input type="radio" ng-model="payment.cardType" name="cardRadio" value="master-card"><i class="bf-cc-mastercard" style="vertical-align: text-top;"></i> Master card
+                                    <input type="radio" ng-model="payment.cardType" name="cardRadio" value="mastercard"><i class="bf-cc-mastercard" style="vertical-align: text-top;"></i> Master card
                                 </label>
                                 <label class="radio-inline">
                                     <input type="radio" ng-model="payment.cardType" name="cardRadio" value="amex"><i class="bf-cc-amex" style="vertical-align: text-top;"></i>
@@ -118,7 +118,7 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Expire month</label>
                                 <div class="col-sm-9">
-                                    <select class="form-control" ng-model="payment.expireMonth" name="expire-month" ng-options="month for month in months"  required>
+                                    <select class="form-control" ng-model="payment.expireMonth" name="expire-month" ng-options="months.indexOf(month) as month for month in months"  required>
                                     </select>
                                 </div>
                             </div>
@@ -126,15 +126,14 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Expire year</label>
                                 <div class="col-sm-9">
-                                    <select class="form-control" ng-model="payment.expireYear" name="expire-month" required>
-                                        <option ng-repeat="year in years" value="{[year]}">{[year]}</option>
+                                    <select class="form-control" ng-model="payment.expireYear" name="expire-month" ng-options="year for year in years" required>
                                     </select>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Card number</label>
                                 <div class="col-sm-9">
-                                    <input ng-model="payment.cardNumber" type="number" class="form-control" required>
+                                    <input ng-model="payment.cardNumber" type="number" class="form-control" min="1000000000000000" max="9999999999999999" required>
                                 </div>
                             </div>
                             <div class="form-group">

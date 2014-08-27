@@ -40,9 +40,9 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
     var busy = false;
     var count = 0;
     $scope.savedMessage = false;
-    $scope.months = ['Jan', 'Feb', 'Mar', 'May', 'Jun', 'July', 'Aug', 'Sep', 'Nov', 'Dec'];
+    $scope.months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     $scope.years = [];
-    for(var i = new Date().getFullYear(); i < new Date().getFullYear()+5; i++){
+    for (var i = new Date().getFullYear(); i < new Date().getFullYear() + 8; i++) {
         $scope.years.push(i);
     }
     // Load more books from DB
@@ -385,20 +385,48 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
         if ($scope.payment.method === 'paypal') {
             window.location.href = '/api/paypal-create';
         } else if ($scope.payment.method === 'credit-card') {
-            window.location.href = '/api/credit-create'
+            // Validate fields
+            if (typeof $scope.payment.firstName == 'undefined' ||
+                typeof $scope.payment.lastName == 'undefined' ||
+                typeof $scope.payment.cardType == 'undefined' ||
+                typeof $scope.payment.expireMonth == 'undefined' ||
+                typeof $scope.payment.expireYear == 'undefined' ||
+                typeof $scope.payment.cardNumber == 'undefined' ||
+                typeof $scope.payment.cvv == 'undefined') {
+                $scope.modalBody = '<div class="alert alert-danger"><strong>Error!</strong> please correct the red fields</div>';
+                $timeout(function() {
+                    $scope.modalBody = '';
+                }, 2000);
+
+            } else {
+                var responsePromise = $http.post('/api/credit-create', angular.toJson($scope.payment));
+                responsePromise.success(function(data, status, header, config) {
+                    $scope.modalBody = '<div class="alert alert-success"><strong>Done!</strong>Thank you for trusting us</div><p>Redirecting... <i class="fa fa-spinner fa-spin"></i><p>';
+                    // Delay 2 seconds before redirect
+                    $timeout(function() {
+                        window.location.href = "/";
+                    }, 2000);
+                });
+                responsePromise.error(function(data, status, header, config) {
+                    $scope.modalBody = '<div class="alert alert-danger"><strong>Error!</strong> please make sure that you have correctly entered the information.</div>';
+                    $timeout(function() {
+                        $scope.modalBody = '';
+                    }, 2000);
+                });
+            }
         } else if ($scope.payment.method === 'bs-system') {
             // If the form are not filled
             if (typeof $scope.payment == 'undefined' ||
                 typeof $scope.payment.account == 'undefined' ||
                 typeof $scope.payment.address == 'undefined') {
                 $timeout(function() {
-                    $scope.modalBody = "";
+                    $scope.modalBody = '';
                 }, 2000);
             } else {
                 // BookStore system
                 var responsePromise = $http.post('/api/bs-system', angular.toJson($scope.payment));
                 responsePromise.success(function(data, status, header, config) {
-                    $scope.modalBody = '<div class="alert alert-success"><strong>Done!</strong>Thanks you for trusting us</div><p>Redirecting... <i class="fa fa-spinner fa-spin"></i><p>'
+                    $scope.modalBody = '<div class="alert alert-success"><strong>Done!</strong>Thank you for trusting us</div><p>Redirecting... <i class="fa fa-spinner fa-spin"></i><p>';
                     // Delay 2 seconds before redirect
                     $timeout(function() {
                         window.location.href = "/";
@@ -406,7 +434,10 @@ app.controller("BSMEANController", function($scope, $http, $timeout) {
 
                 });
                 responsePromise.error(function(data, status, header, config) {
-                    $scope.modalBody = '<div class="alert alert-danger"><strong>Error!</strong> please check your <a href="/setting" class="alert-link">bank account</a> and try again.</div>'
+                    $scope.modalBody = '<div class="alert alert-danger"><strong>Error!</strong> please check your <a href="/setting" class="alert-link">bank account</a> and try again.</div>';
+                    $timeout(function() {
+                        $scope.modalBody = '';
+                    }, 2000);
                 });
             }
 

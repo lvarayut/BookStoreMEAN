@@ -16,7 +16,7 @@ module.exports = function(app) {
         PaymentController.cancelPaypal(req,res);
     });
 
-	app.get('/api/credit-create', utils.isLoggedIn, function(req, res) {
+	app.post('/api/credit-create', utils.isLoggedIn, function(req, res) {
 		PaymentController.createExecuteCreditCard(req, res);
 	});
 
