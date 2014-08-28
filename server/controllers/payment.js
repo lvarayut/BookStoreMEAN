@@ -28,11 +28,9 @@ function sumarizeProduct(req, res, callback) {
         var description = "";
         var total = 0;
         for (var i = 0; i < products.length; i++) {
-            description += products[i].name + ': ' + products[i].price;
-            if (i !== products.length - 1) description += ', ';
             total += products[i].price;
         }
-        description += ' | Total: ' + total + ' euros';
+        description = 'You are buying ' + products.length + ' books.' + ' Total: ' + total.toFixed(2) + ' euros.';
         if (callback) callback(req, res, description, total)
     });
 
@@ -61,7 +59,7 @@ function generatePaypalJSON(req, res, callback) {
                     "total": parseFloat(total).toFixed(2),
                     "currency": "EUR"
                 },
-                "description": description
+                "description": description // 127 characters max.
             }]
         };
         if (callback) callback(res, req, payment);
@@ -84,8 +82,9 @@ function generateCreditJSON(req, res, callback) {
                 "payment_method": "credit_card",
                 "funding_instruments": [{
                     "credit_card": {
-                        "number": paymentDetail.cardNumber.toString(),
-                        "type": paymentDetail.cardType.toString(),
+                        // Card number should be suitable with the card type
+                        "number": paymentDetail.cardNumber.toString(), //5500005555555559
+                        "type": paymentDetail.cardType.toString(), //mastercard
                         "expire_month": parseInt(paymentDetail.expireMonth) + 1,
                         "expire_year": paymentDetail.expireYear,
                         "cvv2": paymentDetail.cvv,
