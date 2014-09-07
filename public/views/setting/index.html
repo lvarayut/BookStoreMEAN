@@ -1,7 +1,7 @@
 {% extends '../layout.html' %}
 {% block content %}
 
-<div class="form-horizontal">
+<div class="form-horizontal" ng-controller="UserController">
   <div class="container">
     <div class="alert alert-success bs-saved-message" role="alert" ng-show="savedMessage">
       <strong><i class="fa fa-check-circle-o"></i>  Saved: </strong> Your personal information has been successfully updated.
