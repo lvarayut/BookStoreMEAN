@@ -35,3 +35,7 @@ app.filter("ellipsis", function() {
         return ellipsis(35, currentText);
     };
 });
+
+app.service('cartService', function() {
+        this.cart = [];
+});

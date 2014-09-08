@@ -1,10 +1,12 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-  	{% include "./searchbar.html" %}
-	<div class="row" style="margin-top: 20px;" ng-controller="ProductController" >
-	 	{% include "./sidebar.html" %}
-	    {% include "./bookpanel.html" %}
+	<div ng-controller="ProductController">
+	  	{% include "./searchbar.html" %}
+		<div class="row" style="margin-top: 20px;" >
+		 	{% include "./sidebar.html" %}
+		    {% include "./bookpanel.html" %}
+		</div>
 	</div>
 {% endblock %}
 

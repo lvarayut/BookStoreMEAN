@@ -69,8 +69,8 @@
                         <form name="addressForm" class="form-horizontal" action="" method="POST">
 
                             <!-- Main raido buttons -->
-                            <h5>Choosing your payment method</h5>
-                            <div class="radio">
+                            <h5 ng-hide="modalBody">Choosing your payment method</h5>
+                            <div class="radio" ng-hide="modalBody">
                                 <label class="radio-inline">
                                     <input type="radio" name="methodRadio" id="paypal" value="paypal" ng-model="payment.method"><i class="bf-paypal"></i> Paypal
                                 </label>
