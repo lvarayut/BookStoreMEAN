@@ -17,6 +17,12 @@ module.exports = function(grunt) {
 				flatten: true,
 				src: 'bower_components/bootstrap/fonts/*',
 				dest: 'build/fonts'
+			},
+			fontBrand:{
+				expand: true,
+				flatten: true,
+				src: 'bower_components/brandfont/fonts/*',
+				dest: 'build/fonts'				
 			}
 		},
 		useminPrepare: {
