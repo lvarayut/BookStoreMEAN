@@ -26,9 +26,9 @@ $("#reviewStar").rating();
 var app = angular.module("BSMEAN", ["infinite-scroll", "ngSanitize", "ngAnimate"]);
 
 // Change angularJs syntax
-app.config(function($interpolateProvider) {
+app.config(['$interpolateProvider', function($interpolateProvider) {
     $interpolateProvider.startSymbol('{[').endSymbol(']}');
-});
+}]);
 
 app.filter("ellipsis", function() {
     return function(currentText) {

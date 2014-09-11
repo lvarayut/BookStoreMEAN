@@ -70,21 +70,21 @@ html {
 /*FullpageJs section*/
 
 #signup-section {
-    background: url('../images/bg_bookstore1.jpg') no-repeat center center fixed;
+    background: url('/assets/images/bg_bookstore1.jpg') no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
 }
 #showcase-section {
-    background: url('../images/bg_bookstore2.jpg') no-repeat center center fixed;
+    background: url('/assets/images/bg_bookstore2.jpg') no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
 }
 #contactus-section {
-    background: url('../images/bg_bookstore3.jpg') no-repeat center center fixed;
+    background: url('/assets/images/bg_bookstore3.jpg') no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;

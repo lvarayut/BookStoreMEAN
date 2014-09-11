@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en" ng-app="BSMEAN">
+<html lang="en" ng-app="BSMEAN" ng-strict-di>
 <head>
     <title>{% block title %} BookStore MEAN {% endblock %}</title>
     <meta charset="utf-8">
@@ -9,13 +9,15 @@
     <meta name="description" content="BookStore application">
 
     {% block stylesheets %}
-        <link rel="stylesheet" href="/vendors/bootstrap/dist/css/bootstrap.min.css">
-        <link rel="stylesheet" href="/vendors/fullpage.js//jquery.fullPage.css">
-        <link rel="stylesheet" href="/vendors/fontawesome/css/font-awesome.min.css">
-        <link rel="stylesheet" href="/vendors/brandfont/css/brandfont.css">        
-        <link rel="stylesheet" href="/vendors/bootstrap-social/bootstrap-social.css">
-        <link rel="stylesheet" href="/vendors/bootstrap-star-rating/css/star-rating.min.css">
-        <link rel="stylesheet" href="/assets/stylesheets/bsmean.css">
+        <!-- build:css(.) /css/bsmean.min.css -->
+        <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/bower_components/fullpage.js//jquery.fullPage.css">
+        <link rel="stylesheet" href="/bower_components/fontawesome/css/font-awesome.min.css">
+        <link rel="stylesheet" href="/bower_components/brandfont/css/brandfont.css">        
+        <link rel="stylesheet" href="/bower_components/bootstrap-social/bootstrap-social.css">
+        <link rel="stylesheet" href="/bower_components/bootstrap-star-rating/css/star-rating.min.css">
+        <link rel="stylesheet" href="/public/assets/stylesheets/bsmean.css">
+        <!-- endbuild -->
     {% endblock %}
 
     <link rel="shortcut icon" type="image/png" href="/public/assets/images/favicon.png">
@@ -32,17 +34,19 @@
         {% block body %}{% endblock %}
 
         {% block javascripts %}
-            <script src="/vendors/jquery/dist/jquery.min.js"></script>
-            <script src="/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
-            <script src="/vendors/angular/angular.min.js"></script>
-            <script src="/vendors/angular-sanitize/angular-sanitize.min.js"></script>
-            <script src="/vendors/ng-infinite-scroller-origin/build/ng-infinite-scroll.min.js"></script>
-            <script src="/vendors/bootstrap-star-rating/js/star-rating.min.js"></script>
-            <script src="/vendors/angular-animate/angular-animate.min.js"></script>
-            <script src="/controllers/bsmean.js"></script>
-            <script src="/controllers/productController.js"></script>
-            <script src="/controllers/orderController.js"></script>
-            <script src="/controllers/userController.js"></script>
+            <!-- build:js(.) /js/bsmean.min.js -->
+            <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+            <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+            <script src="/bower_components/angular/angular.min.js"></script>
+            <script src="/bower_components/angular-sanitize/angular-sanitize.min.js"></script>
+            <script src="/bower_components/ng-infinite-scroller-origin/build/ng-infinite-scroll.min.js"></script>
+            <script src="/bower_components/bootstrap-star-rating/js/star-rating.min.js"></script>
+            <script src="/bower_components/angular-animate/angular-animate.min.js"></script>            
+            <script src="/public/controllers/bsmean.js"></script>
+            <script src="/public/controllers/productController.js"></script>
+            <script src="/public/controllers/orderController.js"></script>
+            <script src="/public/controllers/userController.js"></script>
+            <!-- endbuild -->
         {% endblock %}
     </body>
 </html>
