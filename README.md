@@ -10,7 +10,7 @@
 BookStoreMEAN is short for the BookStore application developed by using [MongoDB](http://www.mongodb.org/), [Express.js](http://expressjs.com/), [Angular.js](https://angularjs.org/), and [Node.js](http://nodejs.org/). Moreover, MySQL is also used in some parts of the application. For more details about the application, please take a look at the [original version](https://github.com/lvarayut/Bookstore).
 
 ## Requirements
-As described in the [Introduction](#Introduction), these technologies should be installed in advance before installing the application. However, some of them are already included with this project. Thus, you must install just the following technologies, please follow instructions written in their official website:
+As described in the [Introduction](#Introduction), these technologies should be installed in advance before installing the application. However, some of them are already included with this project. Thus, you must install just the following technologies, please follow instructions written on their official website:
 
 1. [MongoDB Installation](http://docs.mongodb.org/manual/installation/).
 2. [Node.js Installation](http://nodejs.org/download/).
@@ -22,23 +22,31 @@ As described in the [Introduction](#Introduction), these technologies should be 
 BookStoreMEAN is a modular application that composes of many external modules. In this section, the installation of both **Global modules** and **Dependencies** are clearly explained.
 
 ### Global modules
-Firstly, you need to install **Nodemon** and **Mongoose-Fixture** globally, this will install them into your bin path and let you access them via CLI.
+Firstly, you need to install **Nodemon**, **Mongoose-Fixture**, **Bower**, and **Grunt** globally, this will install them into your bin path and let you access them via CLI.
 
 - [Nodemon](https://github.com/remy/nodemon) - `sudo npm install -g nodemon`
 
 
 - [Mongoose-Fixture](https://github.com/mgan59/mongoose-fixture) - `sudo npm install -g mongoose-fixture`
 
+- [Bower](http://bower.io/) - `sudo npm install -g bower`
+
+- [Grunt](http://gruntjs.com/) - `sudo npm install -g grunt-cli`
+
 ### Dependencies
-The dependencies are incredibly easy to be installed. Basically, Node.js has [Node Packaged Modules (NPM)](https://www.npmjs.org/) that hosts all modules for Node.js. Thus, in this project, there is a file called `package.json` used to indicate required dependencies that the application is depending on. Let's start installing them:
+
+The dependencies are incredibly easy to be installed. Basically, Node.js has [Node Packaged Modules (NPM)](https://www.npmjs.org/) that hosts all modules for Node.js. Thus, in this project, there is a file called `package.json` used to indicate required dependencies that the application is depending on. Moreover, [Bower](http://bower.io/), a package manager for web, is also used in this project in order to handle web dependencies. It works almost the same way as NPM, but using `bower.json` instead of `package.json`.  Let's start installing the dependencies:
 
 1. Open the terminal and go the your project directory.
 2. Execute `sudo npm install`
+3. Execute `bower install`, note that there is no `sudo` in front of bower
+
 
 ## Getting Started
 1. Run MongoDB and MySQL server
 2. Open the terminal and go the your project directory.
-3. Add data fixtures - `mongoose-fixture --fixture='all' --add`
-4. Run application - `nodemon app.js`
+3. Build the project - `grunt build`
+4. Add data fixtures - `mongoose-fixture --fixture='all' --add`
+5. Run application - `nodemon app.js`
 
 That's it. Now, let's open your favorite browser and access `localhost:3000` to see my beautiful website!
